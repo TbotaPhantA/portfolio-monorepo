@@ -7,8 +7,8 @@ export class User {
   role: UserRoleEnum;
   accessTokensVersion: number;
   username: string;
-  salt: Buffer;
-  passwordHash: Buffer;
+  salt: string;
+  passwordHash: string;
   refreshTokens: RefreshToken[];
 
   constructor(raw: NoMethods<User>) {

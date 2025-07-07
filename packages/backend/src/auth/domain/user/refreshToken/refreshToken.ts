@@ -4,7 +4,7 @@ export class RefreshToken {
   refreshTokenId: number;
   userId: number;
   expiresAt: Date;
-  token: Buffer;
+  token: string;
 
   constructor(raw: NoMethods<RefreshToken>) {
     this.refreshTokenId = raw.refreshTokenId;
