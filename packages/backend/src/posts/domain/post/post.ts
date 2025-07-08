@@ -3,6 +3,9 @@ import { PostTypeEnum } from '../enums/postType.enum';
 import { LanguageEnum } from '../enums/language.enum';
 import type { NoMethods } from '../../../infrastructure/shared/types/noMethods';
 import { Comment } from './comment/comment';
+import { CreatePostDto } from '../dto/createPost/createPost.dto';
+import { PLACEHOLDER_DATE, PLACEHOLDER_ID } from '../../../infrastructure/shared/constants';
+import type { User } from '../../../auth/domain/user/user';
 
 export class Post {
   postId: number;
@@ -27,5 +30,20 @@ export class Post {
     this.body = raw.body;
     this.tags = raw.tags;
     this.comments = raw.comments;
+  }
+
+  static createByDto(dto: CreatePostDto, user: Pick<User, 'userId'>): Post {
+    return new Post({
+      postId: PLACEHOLDER_ID,
+      userId: user.userId,
+      status: dto.status,
+      type: dto.type,
+      language: dto.language,
+      createdAt: PLACEHOLDER_DATE,
+      title: dto.title,
+      body: dto.body,
+      tags: dto.tags,
+      comments: dto.comments.map(c => Comment.createByDto(c, user)),
+    })
   }
 }
