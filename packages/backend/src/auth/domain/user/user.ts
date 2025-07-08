@@ -4,7 +4,7 @@ import { RefreshToken } from './refreshToken/refreshToken';
 
 export class User {
   userId: number;
-  role: UserRoleEnum;
+  roles: UserRoleEnum[];
   accessTokensVersion: number;
   username: string;
   salt: string;
@@ -13,7 +13,7 @@ export class User {
 
   constructor(raw: NoMethods<User>) {
     this.userId = raw.userId;
-    this.role = raw.role;
+    this.roles = raw.roles;
     this.accessTokensVersion = raw.accessTokensVersion;
     this.username = raw.username;
     this.salt = raw.salt;
