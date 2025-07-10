@@ -14,7 +14,7 @@ export class CreatePostDtoBuilder {
       title: 'title',
       body: 'body',
       tags: ['tag1'],
-      comments: [CommentBuilder.defaultPreInserted.result]
-    })
+      comments: [CommentBuilder.defaultPreInserted.result],
+    });
   }
 }

@@ -13,10 +13,14 @@ async function bootstrap() {
     new FastifyAdapter({ logger: true }),
   );
 
-  const documentFactory = () => SwaggerModule.createDocument(app, new DocumentBuilder().build());
+  const documentFactory = () =>
+    SwaggerModule.createDocument(app, new DocumentBuilder().build());
   SwaggerModule.setup('api', app, documentFactory);
 
   const port = process.env.PORT ?? 3000;
-  await app.listen(port, () => console.log(`Swagger: http://localhost:${port}/api`));
+  await app.listen(port, () =>
+    console.log(`Swagger: http://localhost:${port}/api`),
+  );
 }
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 bootstrap();

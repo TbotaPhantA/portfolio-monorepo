@@ -1,6 +1,9 @@
 import { NoMethods } from '../../../../infrastructure/shared/types/noMethods';
 import { CreateCommentDto } from '../../dto/createPost/createComment.dto';
-import { PLACEHOLDER_DATE, PLACEHOLDER_ID } from '../../../../infrastructure/shared/constants';
+import {
+  PLACEHOLDER_DATE,
+  PLACEHOLDER_ID,
+} from '../../../../infrastructure/shared/constants';
 import type { User } from '../../../../auth/domain/user/user';
 
 export class Comment {
@@ -20,7 +23,10 @@ export class Comment {
     this.body = raw.body;
   }
 
-  static createByDto(dto: CreateCommentDto, user: Pick<User, 'userId'>): Comment {
+  static createByDto(
+    dto: CreateCommentDto,
+    user: Pick<User, 'userId'>,
+  ): Comment {
     return new Comment({
       commentId: PLACEHOLDER_ID,
       postId: PLACEHOLDER_ID,
@@ -28,6 +34,6 @@ export class Comment {
       createdAt: PLACEHOLDER_DATE,
       path: dto.path,
       body: dto.body,
-    })
+    });
   }
 }

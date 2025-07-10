@@ -4,7 +4,10 @@ import { LanguageEnum } from '../enums/language.enum';
 import type { NoMethods } from '../../../infrastructure/shared/types/noMethods';
 import { Comment } from './comment/comment';
 import { CreatePostDto } from '../dto/createPost/createPost.dto';
-import { PLACEHOLDER_DATE, PLACEHOLDER_ID } from '../../../infrastructure/shared/constants';
+import {
+  PLACEHOLDER_DATE,
+  PLACEHOLDER_ID,
+} from '../../../infrastructure/shared/constants';
 import type { User } from '../../../auth/domain/user/user';
 
 export class Post {
@@ -43,7 +46,7 @@ export class Post {
       title: dto.title,
       body: dto.body,
       tags: dto.tags,
-      comments: dto.comments.map(c => Comment.createByDto(c, user)),
-    })
+      comments: dto.comments.map((c) => Comment.createByDto(c, user)),
+    });
   }
 }
