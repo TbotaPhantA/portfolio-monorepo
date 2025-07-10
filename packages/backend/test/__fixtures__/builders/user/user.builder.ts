@@ -6,7 +6,7 @@ import { makePasswordHash } from '../../../shared/utils/makePasswordHash';
 import { AuthConfigBuilder } from '../auth/authConfig.builder';
 
 export class UserBuilder {
-  static defaultAll(): InjectionBuilder<User> {
+  static get defaultAll(): InjectionBuilder<User> {
     return new InjectionBuilder<User>(
       new User({
         userId: 1,

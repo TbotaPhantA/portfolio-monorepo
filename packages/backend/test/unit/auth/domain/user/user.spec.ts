@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { AuthConfig, User } from '../../../../../src/auth/domain/user/user';
 import { UserBuilder } from '../../../../__fixtures__/builders/user/user.builder';
 import { AuthConfigBuilder } from '../../../../__fixtures__/builders/auth/authConfig.builder';
@@ -7,6 +8,7 @@ import { getTimeInSeconds } from '../../../../shared/utils/getTimeInSeconds';
 import { makePasswordHash } from '../../../../shared/utils/makePasswordHash';
 import { USERNAME_OR_PASSWORD_IS_NOT_VALID } from '../../../../../src/infrastructure/shared/constants';
 import { makeSalt } from '../../../../shared/utils/makeSalt';
+import { RefreshTokenBuilder } from '../../../../__fixtures__/builders/user/refreshToken.builder';
 
 const makeExpectedPayload = (
   userProps: User,
@@ -47,7 +49,7 @@ describe(`${User.name}`, () => {
       const notThrowsTestCases = [
         {
           name: '1 valid admin credentials - should return valid tokens',
-          user: UserBuilder.defaultAll().with({
+          user: UserBuilder.defaultAll.with({
             userId: 1,
             roles: [UserRoleEnum.ADMIN],
             jwtTokensVersion: 1,
@@ -79,14 +81,14 @@ describe(`${User.name}`, () => {
         async ({ user, suppliedPassword, authConfig, now }) => {
           jest.useFakeTimers().setSystemTime(now);
 
-          const tokens = await user.login(suppliedPassword, authConfig);
+          const resultTokens = await user.login(suppliedPassword, authConfig);
 
           const accessPayload = jwt.verify(
-            tokens.accessToken,
+            resultTokens.accessToken,
             authConfig.accessToken.privateKey,
           );
           const refreshPayload = jwt.verify(
-            tokens.refreshToken,
+            resultTokens.refreshToken,
             authConfig.refreshToken.privateKey,
           );
           const expected = makeExpectedPayload(user, authConfig, now);
@@ -97,6 +99,10 @@ describe(`${User.name}`, () => {
             accessTokenPayload: expected.accessToken,
             refreshTokenPayload: expected.refreshToken,
           });
+          expect(user.refreshTokens[user.refreshTokens.length - 1]).toStrictEqual(RefreshTokenBuilder.defaultPreInserted.with({
+            token: resultTokens.refreshToken,
+            expiresAt: new Date(now.getTime() + authConfig.refreshToken.expiryInSeconds * 1000)
+          }).result)
         },
       );
     });
@@ -105,7 +111,7 @@ describe(`${User.name}`, () => {
       const throwsTestCases = [
         {
           name: '1 invalid password - should throw',
-          user: UserBuilder.defaultAll().with({
+          user: UserBuilder.defaultAll.with({
             userId: 1,
             roles: [UserRoleEnum.ADMIN],
             jwtTokensVersion: 1,
@@ -144,4 +150,4 @@ describe(`${User.name}`, () => {
       );
     });
   });
-});
+})

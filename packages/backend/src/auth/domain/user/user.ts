@@ -5,10 +5,14 @@ import type { config } from '../../../infrastructure/config/config';
 import { scrypt } from '../../../infrastructure/shared/utils/scrypt';
 import * as crypto from 'crypto';
 import { UnauthorizedException } from '@nestjs/common';
-import { USERNAME_OR_PASSWORD_IS_NOT_VALID } from '../../../infrastructure/shared/constants';
+import {
+  PLACEHOLDER_ID,
+  USERNAME_OR_PASSWORD_IS_NOT_VALID,
+} from '../../../infrastructure/shared/constants';
 import * as jwt from 'jsonwebtoken';
 
 export type AuthConfig = (typeof config)['auth'];
+export type TokenPair = { accessToken: string; refreshToken: string };
 
 export class User {
   userId: number;
@@ -32,7 +36,7 @@ export class User {
   async login(
     suppliedPassword: string,
     authConfig: AuthConfig,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
+  ): Promise<TokenPair> {
     if (!(await this.doPasswordsMatch(suppliedPassword, authConfig))) {
       throw new UnauthorizedException(USERNAME_OR_PASSWORD_IS_NOT_VALID);
     }
@@ -44,10 +48,14 @@ export class User {
       username: this.username,
     };
 
-    return {
-      accessToken: this.signJwt(sharedPayload, authConfig.accessToken),
-      refreshToken: this.signJwt(sharedPayload, authConfig.refreshToken),
-    };
+    const accessToken = this.signJwt(sharedPayload, authConfig.accessToken);
+    const refreshToken = this.signJwt(sharedPayload, authConfig.refreshToken);
+
+    this.refreshTokens.push(
+      RefreshToken.createByRefreshToken(refreshToken, PLACEHOLDER_ID),
+    );
+
+    return { accessToken, refreshToken };
   }
 
   private async doPasswordsMatch(
