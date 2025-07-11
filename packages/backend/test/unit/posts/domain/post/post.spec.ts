@@ -15,8 +15,8 @@ describe(`${Post.name}`, () => {
     ];
 
     test.each(testCases)('%s', ({ dto, user, expectedPost }) => {
-      const result = Post.createByDto(dto, user);
-      expect(result).toStrictEqual(expectedPost);
+      const resultPost = Post.createByDto(dto, user);
+      expect(resultPost).toStrictEqual(expectedPost);
     });
   });
 });
