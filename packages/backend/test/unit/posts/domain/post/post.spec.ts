@@ -7,7 +7,7 @@ describe(`${Post.name}`, () => {
   describe(`${Post.createByDto.name}`, () => {
     const testCases = [
       {
-        toString: () => '1',
+        toString: () => '1 default creation - should be properly created',
         dto: CreatePostDtoBuilder.defaultAll.result,
         user: { userId: 1 } satisfies Pick<User, 'userId'>,
         expectedPost: PostBuilder.defaultPreInserted.result,
