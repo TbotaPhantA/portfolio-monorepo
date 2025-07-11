@@ -3,11 +3,9 @@ import { AuthConfig, User } from '../../../../../src/auth/domain/user/user';
 import { UserBuilder } from '../../../../__fixtures__/builders/user/user.builder';
 import { AuthConfigBuilder } from '../../../../__fixtures__/builders/auth/authConfig.builder';
 import * as jwt from 'jsonwebtoken';
-import { UserRoleEnum } from '../../../../../src/auth/domain/enums/userRole.enum';
 import { getTimeInSeconds } from '../../../../shared/utils/getTimeInSeconds';
 import { makePasswordHash } from '../../../../shared/utils/makePasswordHash';
 import { USERNAME_OR_PASSWORD_IS_NOT_VALID } from '../../../../../src/infrastructure/shared/constants';
-import { makeSalt } from '../../../../shared/utils/makeSalt';
 import { RefreshTokenBuilder } from '../../../../__fixtures__/builders/user/refreshToken.builder';
 
 const makeExpectedPayload = (
@@ -24,7 +22,7 @@ const makeExpectedPayload = (
   const iat = getTimeInSeconds(now);
 
   const { accessToken, refreshToken } = authConfig;
-  const make = (
+  const makePayload = (
     tokenConfig: AuthConfig['accessToken'] | AuthConfig['refreshToken'],
   ) => ({
     userId,
@@ -38,8 +36,8 @@ const makeExpectedPayload = (
   });
 
   return {
-    accessToken: make(accessToken),
-    refreshToken: make(refreshToken),
+    accessPayload: makePayload(accessToken),
+    refreshPayload: makePayload(refreshToken),
   };
 };
 
@@ -50,28 +48,13 @@ describe(`${User.name}`, () => {
         {
           name: '1 valid admin credentials - should return valid tokens',
           user: UserBuilder.defaultAll.with({
-            userId: 1,
-            roles: [UserRoleEnum.ADMIN],
-            jwtTokensVersion: 1,
-            username: 'username',
-            salt: makeSalt('salt', AuthConfigBuilder.defaultAll.result),
             passwordHash: makePasswordHash(
               'correct password',
               AuthConfigBuilder.defaultAll.result,
             ),
-            refreshTokens: [],
           }).result,
           suppliedPassword: 'correct password',
-          authConfig: AuthConfigBuilder.defaultAll.with({
-            accessToken: {
-              privateKey: 'privateKey1',
-              expiryInSeconds: 100,
-            },
-            refreshToken: {
-              privateKey: 'privateKey2',
-              expiryInSeconds: 150,
-            },
-          }).result,
+          authConfig: AuthConfigBuilder.defaultAll.result,
           now: new Date(2022, 0, 3),
         },
       ];
@@ -79,30 +62,35 @@ describe(`${User.name}`, () => {
       test.each(notThrowsTestCases)(
         '$name',
         async ({ user, suppliedPassword, authConfig, now }) => {
+          // arrange
           jest.useFakeTimers().setSystemTime(now);
 
+          // act
           const resultTokens = await user.login(suppliedPassword, authConfig);
 
-          const accessPayload = jwt.verify(
-            resultTokens.accessToken,
-            authConfig.accessToken.privateKey,
-          );
-          const refreshPayload = jwt.verify(
-            resultTokens.refreshToken,
-            authConfig.refreshToken.privateKey,
-          );
-          const expected = makeExpectedPayload(user, authConfig, now);
-          expect({
-            accessTokenPayload: accessPayload,
-            refreshTokenPayload: refreshPayload,
-          }).toStrictEqual({
-            accessTokenPayload: expected.accessToken,
-            refreshTokenPayload: expected.refreshToken,
-          });
-          expect(user.refreshTokens[user.refreshTokens.length - 1]).toStrictEqual(RefreshTokenBuilder.defaultPreInserted.with({
-            token: resultTokens.refreshToken,
-            expiresAt: new Date(now.getTime() + authConfig.refreshToken.expiryInSeconds * 1000)
-          }).result)
+          // assert
+          const tokensPayload = assertTokensAreValid();
+          expect(tokensPayload).toStrictEqual(makeExpectedPayload(user, authConfig, now));
+          expect(user.refreshTokens[user.refreshTokens.length - 1])
+            .toStrictEqual(
+              RefreshTokenBuilder.defaultPreInserted.with({
+                token: resultTokens.refreshToken,
+                expiresAt: new Date(now.getTime() + authConfig.refreshToken.expiryInSeconds * 1000)
+              }).result
+            )
+
+          function assertTokensAreValid() {
+            const accessPayload = jwt.verify(
+              resultTokens.accessToken,
+              authConfig.accessToken.privateKey,
+            );
+            const refreshPayload = jwt.verify(
+              resultTokens.refreshToken,
+              authConfig.refreshToken.privateKey,
+            );
+
+            return { accessPayload, refreshPayload };
+          }
         },
       );
     });
@@ -112,28 +100,13 @@ describe(`${User.name}`, () => {
         {
           name: '1 invalid password - should throw',
           user: UserBuilder.defaultAll.with({
-            userId: 1,
-            roles: [UserRoleEnum.ADMIN],
-            jwtTokensVersion: 1,
-            username: 'username',
-            salt: makeSalt('salt', AuthConfigBuilder.defaultAll.result),
             passwordHash: makePasswordHash(
               'correct password',
               AuthConfigBuilder.defaultAll.result,
             ),
-            refreshTokens: [],
           }).result,
           suppliedPassword: 'incorrect password',
-          authConfig: AuthConfigBuilder.defaultAll.with({
-            accessToken: {
-              privateKey: 'privateKey1',
-              expiryInSeconds: 100,
-            },
-            refreshToken: {
-              privateKey: 'privateKey2',
-              expiryInSeconds: 150,
-            },
-          }).result,
+          authConfig: AuthConfigBuilder.defaultAll.result,
           now: new Date(2022, 0, 3),
         },
       ];
