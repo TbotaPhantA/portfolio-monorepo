@@ -52,7 +52,7 @@ describe(`${User.name}`, () => {
             AuthConfigBuilder.defaultAll.result,
           ),
         }).result,
-        suppliedPassword: 'correct password',
+        givenPassword: 'correct password',
         authConfig: AuthConfigBuilder.defaultAll.result,
         now: new Date(2022, 0, 3),
       },
@@ -60,12 +60,12 @@ describe(`${User.name}`, () => {
 
     test.each(notThrowsTestCases)(
       '$name',
-      async ({ user, suppliedPassword, authConfig, now }) => {
+      async ({ user, givenPassword, authConfig, now }) => {
         // arrange
         jest.useFakeTimers().setSystemTime(now);
 
         // act
-        const resultTokens = await user.login(suppliedPassword, authConfig);
+        const resultTokens = await user.login(givenPassword, authConfig);
 
         // assert
         const tokensPayload = assertTokensAreValid();

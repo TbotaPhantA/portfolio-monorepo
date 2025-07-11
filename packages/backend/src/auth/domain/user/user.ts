@@ -34,10 +34,10 @@ export class User {
   }
 
   async login(
-    suppliedPassword: string,
+    givenPassword: string,
     authConfig: AuthConfig,
   ): Promise<TokenPair> {
-    if (!(await this.doPasswordsMatch(suppliedPassword, authConfig))) {
+    if (!(await this.doPasswordsMatch(givenPassword, authConfig))) {
       throw new UnauthorizedException(USERNAME_OR_PASSWORD_IS_NOT_VALID);
     }
 
