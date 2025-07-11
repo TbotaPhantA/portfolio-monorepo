@@ -12,6 +12,16 @@ describe(`${Post.name}`, () => {
         user: { userId: 1 } satisfies Pick<User, 'userId'>,
         expectedPost: PostBuilder.defaultPreInserted.result,
       },
+      {
+        toString: () => '2 default creation - should be properly created',
+        dto: CreatePostDtoBuilder.defaultAll.with({
+          tags: ['sdfsdf', 'sdfsdf']
+        }).result,
+        user: { userId: 1 } satisfies Pick<User, 'userId'>,
+        expectedPost: PostBuilder.defaultPreInserted.with({
+          tags: ['sdfsdf', 'sdfsdf']
+        }).result,
+      },
     ];
 
     test.each(testCases)('%s', ({ dto, user, expectedPost }) => {

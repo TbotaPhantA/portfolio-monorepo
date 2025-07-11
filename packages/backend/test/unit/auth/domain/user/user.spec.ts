@@ -56,6 +56,18 @@ describe(`${User.name}`, () => {
         authConfig: AuthConfigBuilder.defaultAll.result,
         now: new Date(2022, 0, 3),
       },
+      {
+        name: '2 valid admin credentials - should return valid tokens',
+        user: UserBuilder.defaultAll.with({
+          passwordHash: makePasswordHash(
+            'correct password 2',
+            AuthConfigBuilder.defaultAll.result,
+          ),
+        }).result,
+        givenPassword: 'correct password 2',
+        authConfig: AuthConfigBuilder.defaultAll.result,
+        now: new Date(2022, 0, 3),
+      },
     ];
 
     test.each(notThrowsTestCases)(
