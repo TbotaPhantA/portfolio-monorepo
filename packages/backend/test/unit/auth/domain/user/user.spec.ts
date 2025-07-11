@@ -102,7 +102,7 @@ describe(`${User.name}`, () => {
             AuthConfigBuilder.defaultAll.result,
           ),
         }).result,
-        suppliedPassword: 'incorrect password',
+        givenPassword: 'incorrect password',
         authConfig: AuthConfigBuilder.defaultAll.result,
         now: new Date(2022, 0, 3),
       },
@@ -110,11 +110,11 @@ describe(`${User.name}`, () => {
 
     test.each(throwsTestCases)(
       '$name',
-      async ({ user, suppliedPassword, authConfig, now }) => {
+      async ({ user, givenPassword, authConfig, now }) => {
         jest.useFakeTimers().setSystemTime(now);
 
         await expect(
-          user.login(suppliedPassword, authConfig),
+          user.login(givenPassword, authConfig),
         ).rejects.toThrow(USERNAME_OR_PASSWORD_IS_NOT_VALID);
       },
     );
