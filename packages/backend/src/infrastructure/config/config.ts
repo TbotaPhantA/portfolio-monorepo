@@ -8,6 +8,7 @@ export class Config {
   server = {
     env: process.env.ENV ?? isRequired('ENV'),
     port: Number(process.env.PORT ?? isRequired('PORT')),
+    cookieSecret: process.env.COOKIE_SECRET ?? isRequired('COOKIE_SECRET'),
   };
 
   db = {
