@@ -59,18 +59,18 @@ export class User {
   }
 
   private async doPasswordsMatch(
-    suppliedPassword: string,
+    givenPassword: string,
     { passwordPepper, keyLengthInBytes }: AuthConfig,
   ): Promise<boolean> {
-    const hash = await scrypt(
-      suppliedPassword + passwordPepper,
+    const givenHash = await scrypt(
+      givenPassword + passwordPepper,
       this.salt,
       keyLengthInBytes,
     );
 
     return (
-      hash.length === this.passwordHash.length &&
-      crypto.timingSafeEqual(hash, this.passwordHash)
+      givenHash.length === this.passwordHash.length &&
+      crypto.timingSafeEqual(givenHash, this.passwordHash)
     );
   }
 
