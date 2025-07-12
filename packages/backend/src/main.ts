@@ -8,6 +8,7 @@ import {
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import fastifyCookie, { FastifyCookieOptions } from '@fastify/cookie';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -20,6 +21,10 @@ async function bootstrap() {
   await app.register<FastifyCookieOptions>(fastifyCookie, {
     secret: process.env.COOKIE_SECRET, // optional, for signed cookies
   });
+
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true
+  }));
 
   const documentFactory = () =>
     SwaggerModule.createDocument(app, new DocumentBuilder().build());
