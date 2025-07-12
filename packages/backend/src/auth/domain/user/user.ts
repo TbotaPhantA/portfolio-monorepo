@@ -52,7 +52,7 @@ export class User {
     const refreshToken = this.signJwt(sharedPayload, authConfig.refreshToken);
 
     this.refreshTokens.push(
-      RefreshToken.createByRefreshToken(refreshToken, PLACEHOLDER_ID),
+      RefreshToken.createByRefreshToken(refreshToken, this.userId),
     );
 
     return { accessToken, refreshToken };
