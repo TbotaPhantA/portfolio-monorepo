@@ -152,6 +152,15 @@ export async function up(db: Kysely<any>): Promise<void> {
 export async function down(db: Kysely<any>): Promise<void> {
   const { schema } = db;
 
+  // Drop indexes
+  await schema.dropIndex('comments_post_created_at_idx').execute()
+  await schema.dropIndex('comments_user_id_hash').execute()
+  await schema.dropIndex('posts_language_created_at').execute()
+  await schema.dropIndex('posts_language_title_unique').execute()
+  await schema.dropIndex('posts_user_id_hash').execute()
+  await schema.dropIndex('refresh_tokens_user_token_expires_unique').execute()
+  await schema.dropIndex('users_username_unique').execute()
+
   // Drop tables
   await schema.dropTable('comments').cascade().execute()
   await schema.dropTable('posts').cascade().execute()
