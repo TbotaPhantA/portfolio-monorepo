@@ -26,11 +26,7 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, documentFactory);
 
   const port = process.env.PORT ?? 3000;
-  await app.listen(port, () =>
-    process.env.NODE_ENV === 'dev'
-      ? console.log(`Swagger: http://localhost:${port}/api`)
-      : null,
-  );
+  await app.listen(port, () => console.log(`Swagger: http://localhost:${port}/api`));
 }
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 bootstrap();
