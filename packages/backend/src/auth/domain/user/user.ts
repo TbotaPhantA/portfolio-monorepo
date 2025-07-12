@@ -16,8 +16,8 @@ export type TokenPair = { accessToken: string; refreshToken: string };
 
 export class User {
   userId: number;
-  roles: UserRoleEnum[];
   jwtTokensVersion: number;
+  roles: UserRoleEnum[];
   username: string;
   salt: Buffer;
   passwordHash: Buffer;
@@ -25,8 +25,8 @@ export class User {
 
   constructor(raw: NoMethods<User>) {
     this.userId = raw.userId;
-    this.roles = raw.roles;
     this.jwtTokensVersion = raw.jwtTokensVersion;
+    this.roles = raw.roles;
     this.username = raw.username;
     this.salt = raw.salt;
     this.passwordHash = raw.passwordHash;
@@ -43,8 +43,8 @@ export class User {
 
     const sharedPayload = {
       userId: this.userId,
-      roles: this.roles,
       jwtTokensVersion: this.jwtTokensVersion,
+      roles: this.roles,
       username: this.username,
     };
 
