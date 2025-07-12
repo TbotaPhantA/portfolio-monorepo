@@ -24,7 +24,8 @@
     "kysely:help": "kysely --help",
     "kysely": "kysely",
     "migrate:up": "kysely migrate:up",
-    "migrate:down": "kysely migrate:down"
+    "migrate:down": "kysely migrate:down",
+    "seed:run": "kysely seed:run"
   },
   "dependencies": {
     "@fastify/static": "^8.2.0",
