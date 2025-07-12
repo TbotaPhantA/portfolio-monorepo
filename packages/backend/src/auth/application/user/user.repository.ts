@@ -20,13 +20,11 @@ export class UserRepository {
         'users.username as username',
         'users.salt as salt',
         'users.password_hash as passwordHash',
-        this.db.fn
-          .jsonAgg('refresh_tokens')
-          .as('refreshTokens'),
+        this.db.fn.jsonAgg('refresh_tokens').as('refreshTokens'),
       ])
       .where('users.username', '=', username)
       .groupBy(['users.user_id'])
-      .executeTakeFirst()
+      .executeTakeFirst();
 
     if (!raw) return null;
 
@@ -37,8 +35,8 @@ export class UserRepository {
           userId: t.user_id,
           expiresAt: t.expires_at,
           token: t.token,
-        })
-    )
+        }),
+    );
 
     return new User({
       userId: raw.userId,
@@ -48,6 +46,6 @@ export class UserRepository {
       salt: raw.salt,
       passwordHash: raw.passwordHash,
       refreshTokens,
-    })
+    });
   }
 }

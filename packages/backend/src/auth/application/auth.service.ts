@@ -12,8 +12,11 @@ export class AuthService {
   constructor(private readonly repo: UserRepository) {}
 
   async login(dto: LoginDto, reply: FastifyReply): Promise<LoginResponseDto> {
-    const user = await this.getByUsername(dto.username)
-    const { accessToken, refreshToken } = await user.login(dto.username, config.auth);
+    const user = await this.getByUsername(dto.username);
+    const { accessToken, refreshToken } = await user.login(
+      dto.username,
+      config.auth,
+    );
     this.addRefreshTokenToCookies(refreshToken, reply);
     return LoginResponseDto.from(accessToken);
   }
@@ -25,7 +28,7 @@ export class AuthService {
       throw new UnauthorizedException(USERNAME_OR_PASSWORD_IS_NOT_VALID);
     }
 
-    return user
+    return user;
   }
 
   private addRefreshTokenToCookies(refreshToken: string, reply: FastifyReply) {

@@ -5,7 +5,7 @@ export class LoginResponseDto {
   accessToken: string;
 
   static from(accessToken: string): LoginResponseDto {
-    const dto = new LoginResponseDto()
+    const dto = new LoginResponseDto();
     dto.accessToken = accessToken;
     return dto;
   }

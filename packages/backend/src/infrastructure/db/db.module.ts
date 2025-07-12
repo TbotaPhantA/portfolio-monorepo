@@ -13,12 +13,12 @@ const kyselyModule = KyselyModule.forRoot({
       host: config.db.host,
       port: config.db.port,
       max: 10,
-    })
-  })
-})
+    }),
+  }),
+});
 
 @Module({
   imports: [kyselyModule],
-  exports: [kyselyModule]
+  exports: [kyselyModule],
 })
 export class DBModule {}

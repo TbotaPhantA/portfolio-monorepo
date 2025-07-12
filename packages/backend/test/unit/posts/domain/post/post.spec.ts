@@ -15,11 +15,11 @@ describe(`${Post.name}`, () => {
       {
         toString: () => '2 default creation - should be properly created',
         dto: CreatePostDtoBuilder.defaultAll.with({
-          tags: ['sdfsdf', 'sdfsdf']
+          tags: ['sdfsdf', 'sdfsdf'],
         }).result,
         user: { userId: 1 } satisfies Pick<User, 'userId'>,
         expectedPost: PostBuilder.defaultPreInserted.with({
-          tags: ['sdfsdf', 'sdfsdf']
+          tags: ['sdfsdf', 'sdfsdf'],
         }).result,
       },
     ];
