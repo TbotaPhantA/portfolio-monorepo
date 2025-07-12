@@ -30,7 +30,7 @@ export async function up(db: Kysely<any>): Promise<void> {
   // Tables
   await schema
     .createTable('users')
-    .addColumn('user_id', sql`smallserial`, col => col.primaryKey())
+    .addColumn('user_id', 'serial', col => col.primaryKey())
     .addColumn('jwt_tokens_version', 'smallint', col => col.notNull().defaultTo(1))
     .addColumn('roles', sql`user_role_enum[]`, col => col.notNull())
     .addColumn('username', 'varchar(31)', col => col.notNull())
@@ -40,16 +40,16 @@ export async function up(db: Kysely<any>): Promise<void> {
 
   await schema
     .createTable('refresh_tokens')
-    .addColumn('refresh_token_id', sql`smallserial`, col => col.primaryKey())
-    .addColumn('user_id', 'smallint', col => col.notNull())
+    .addColumn('refresh_token_id', 'serial', col => col.primaryKey())
+    .addColumn('user_id', 'int4', col => col.notNull())
     .addColumn('expires_at', 'timestamp', col => col.notNull())
     .addColumn('token', 'varchar', col => col.notNull())
     .execute()
 
   await schema
     .createTable('posts')
-    .addColumn('post_id', sql`smallserial`, col => col.primaryKey())
-    .addColumn('user_id', 'smallint', col => col.notNull())
+    .addColumn('post_id', 'serial', col => col.primaryKey())
+    .addColumn('user_id', 'int4', col => col.notNull())
     .addColumn('status', sql`post_status_enum`, col => col.notNull())
     .addColumn('type', sql`post_type_enum`, col => col.notNull())
     .addColumn('language', sql`language_enum`, col => col.notNull())
@@ -61,9 +61,9 @@ export async function up(db: Kysely<any>): Promise<void> {
 
   await schema
     .createTable('comments')
-    .addColumn('comment_id', sql`smallserial`, col => col.primaryKey())
-    .addColumn('post_id', 'smallint', col => col.notNull())
-    .addColumn('user_id', 'smallint', col => col.notNull())
+    .addColumn('comment_id', 'serial', col => col.primaryKey())
+    .addColumn('post_id', 'int4', col => col.notNull())
+    .addColumn('user_id', 'int4', col => col.notNull())
     .addColumn('created_at', 'timestamptz', col => col.notNull().defaultTo(sql`now()`))
     .addColumn('path', sql`ltree`, col => col.notNull())
     .addColumn('body', 'text', col => col.notNull())
