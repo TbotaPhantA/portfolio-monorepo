@@ -14,7 +14,7 @@ export class AuthService {
   async login(dto: LoginDto, reply: FastifyReply): Promise<LoginResponseDto> {
     const user = await this.getByUsername(dto.username);
     const { accessToken, refreshToken } = await user.login(
-      dto.username,
+      dto.password,
       config.auth,
     );
     this.addRefreshTokenToCookies(refreshToken, reply);
