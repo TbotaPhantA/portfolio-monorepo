@@ -38,7 +38,7 @@ export class UserRepository {
       })
       .where('users.username', '=', username)
       .groupBy(['users.user_id'])
-    
+
     const raw = await query.executeTakeFirst();
 
     if (!raw) return null;
@@ -56,7 +56,7 @@ export class UserRepository {
     return new User({
       userId: raw.userId,
       jwtTokensVersion: raw.jwtTokensVersion,
-      roles: raw.roles as any,
+      roles: raw.roles,
       username: raw.username,
       salt: raw.salt,
       passwordHash: raw.passwordHash,
