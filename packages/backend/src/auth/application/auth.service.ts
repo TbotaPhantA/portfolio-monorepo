@@ -17,6 +17,7 @@ export class AuthService {
       dto.password,
       config.auth,
     );
+    await this.repo.insertRefreshTokens(user.refreshTokens.slice(-1));
     this.addRefreshTokenToCookies(refreshToken, reply);
     return LoginResponseDto.from(accessToken);
   }

@@ -63,4 +63,14 @@ export class UserRepository {
       refreshTokens,
     });
   }
+
+  async insertRefreshTokens(refreshTokens: RefreshToken[]): Promise<void> {
+    await this.db.insertInto('refresh_tokens')
+      .values(refreshTokens.map(token => ({
+        user_id: token.userId,
+        expires_at: token.expiresAt,
+        token: token.token,
+      })))
+      .execute()
+  }
 }
