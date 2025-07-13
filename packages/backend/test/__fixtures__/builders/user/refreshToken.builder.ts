@@ -18,7 +18,7 @@ export class RefreshTokenBuilder {
     return new InjectionBuilder<RefreshToken>(
       new RefreshToken({
         refreshTokenId: PLACEHOLDER_ID,
-        userId: PLACEHOLDER_ID,
+        userId: 1,
         expiresAt: new Date(2022, 0, 3),
         token: 'token',
       }),
