@@ -30,4 +30,8 @@ export class RefreshToken {
       expiresAt: new Date(payload.exp * 1000),
     });
   }
+
+  isExpired(): boolean {
+    return this.expiresAt.getTime() < Date.now();
+  }
 }
