@@ -5,7 +5,10 @@ import { AuthConfigBuilder } from '../../../../__fixtures__/builders/auth/authCo
 import * as jwt from 'jsonwebtoken';
 import { getTimeInSeconds } from '../../../../shared/utils/getTimeInSeconds';
 import { makePasswordHash } from '../../../../shared/utils/makePasswordHash';
-import { USERNAME_OR_PASSWORD_IS_NOT_VALID } from '../../../../../src/infrastructure/shared/constants';
+import {
+  REFRESH_TOKEN_NOT_FOUND,
+  USERNAME_OR_PASSWORD_IS_NOT_VALID
+} from '../../../../../src/infrastructure/shared/constants';
 import { RefreshTokenBuilder } from '../../../../__fixtures__/builders/user/refreshToken.builder';
 
 const makeExpectedPayload = (
@@ -130,5 +133,85 @@ describe(`${User.name}`, () => {
         ).rejects.toThrow(USERNAME_OR_PASSWORD_IS_NOT_VALID);
       },
     );
+  });
+
+  describe(User.prototype.refresh.name, () => {
+    const throwsTestCases = [
+      {
+        name: '1 nonexistent token - should throw',
+        now: new Date(2022, 0, 3),
+        user: UserBuilder.defaultAll.result,
+        token: 'nonexistent',
+        authConfig: AuthConfigBuilder.defaultAll.result,
+      },
+      {
+        name: '2 expired token - should throw',
+        now: new Date(2022, 0, 3),
+        user: UserBuilder.defaultAll.with({
+          refreshTokens: [
+            RefreshTokenBuilder.defaultPreInserted.with({
+              token: 'expired-token',
+              expiresAt: new Date(new Date(2022, 0, 3).getTime() - 1000),
+            }).result,
+          ],
+        }).result,
+        token: 'expired-token',
+        authConfig: AuthConfigBuilder.defaultAll.result,
+      },
+    ];
+
+    test.each(throwsTestCases)('$name', async ({ user, now, token, authConfig }) => {
+      jest.useFakeTimers().setSystemTime(now);
+      await expect(user.refresh(token, authConfig))
+        .rejects.toThrow(REFRESH_TOKEN_NOT_FOUND);
+    });
+
+    const validTestCases = [
+      {
+        name: '1 valid refresh token - rotates and returns new tokens',
+        user: UserBuilder.defaultAll.with({
+          refreshTokens: [
+            RefreshTokenBuilder.defaultPreInserted.with({
+              token: 'current-refresh',
+              expiresAt: new Date(
+                new Date(2022, 0, 3).getTime() +
+                  AuthConfigBuilder.defaultAll.result.refreshToken.expiryInSeconds * 1000,
+              ),
+            }).result,
+          ],
+        }).result,
+        token: 'current-refresh',
+        authConfig: AuthConfigBuilder.defaultAll.result,
+        now: new Date(2022, 0, 3),
+      },
+    ];
+
+    test.each(validTestCases)('$name', async ({ user, token, authConfig, now }) => {
+      jest.useFakeTimers().setSystemTime(now);
+
+      const { accessToken, refreshToken } = await user.refresh(token, authConfig);
+
+      const accessPayload = jwt.verify(
+        accessToken,
+        authConfig.accessToken.privateKey,
+      );
+      const refreshPayload = jwt.verify(
+        refreshToken,
+        authConfig.refreshToken.privateKey,
+      );
+
+      expect({ accessPayload, refreshPayload })
+        .toStrictEqual(makeExpectedPayload(user, authConfig, now));
+
+      expect(user.refreshTokens).toHaveLength(1);
+      expect(user.refreshTokens[0]).toStrictEqual(
+        RefreshTokenBuilder.defaultPreInserted.with({
+          token: refreshToken,
+          expiresAt: new Date(
+            now.getTime() + authConfig.refreshToken.expiryInSeconds * 1000,
+          ),
+        }).result,
+      );
+    });
   });
 })
