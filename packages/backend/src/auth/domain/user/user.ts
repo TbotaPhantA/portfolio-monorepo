@@ -6,7 +6,7 @@ import { scrypt } from '../../../infrastructure/shared/utils/scrypt';
 import * as crypto from 'crypto';
 import { UnauthorizedException } from '@nestjs/common';
 import {
-  PLACEHOLDER_ID,
+  REFRESH_TOKEN_NOT_FOUND,
   USERNAME_OR_PASSWORD_IS_NOT_VALID,
 } from '../../../infrastructure/shared/constants';
 import * as jwt from 'jsonwebtoken';
@@ -41,12 +41,7 @@ export class User {
       throw new UnauthorizedException(USERNAME_OR_PASSWORD_IS_NOT_VALID);
     }
 
-    const sharedPayload = {
-      userId: this.userId,
-      jwtTokensVersion: this.jwtTokensVersion,
-      roles: this.roles,
-      username: this.username,
-    };
+    const sharedPayload = this.buildPayload();
 
     const accessToken = this.signJwt(sharedPayload, authConfig.accessToken);
     const refreshToken = this.signJwt(sharedPayload, authConfig.refreshToken);
@@ -56,6 +51,28 @@ export class User {
     );
 
     return { accessToken, refreshToken };
+  }
+
+  async refresh(
+    oldRefreshToken: string,
+    authConfig: AuthConfig,
+  ): Promise<TokenPair> {
+    const stored = this.refreshTokens.find(rt => rt.token === oldRefreshToken);
+    if (!stored || stored.isExpired()) {
+      throw new UnauthorizedException(REFRESH_TOKEN_NOT_FOUND);
+    }
+
+    this.refreshTokens = this.refreshTokens.filter(rt => rt !== stored);
+
+    const sharedPayload = this.buildPayload();
+    const newAccessToken = this.signJwt(sharedPayload, authConfig.accessToken);
+    const newRefreshToken = this.signJwt(sharedPayload, authConfig.refreshToken);
+
+    this.refreshTokens.push(
+      RefreshToken.createByRefreshToken(newRefreshToken, this.userId),
+    );
+
+    return { accessToken: newAccessToken, refreshToken: newRefreshToken };
   }
 
   private async doPasswordsMatch(
@@ -72,6 +89,15 @@ export class User {
       givenHash.length === this.passwordHash.length &&
       crypto.timingSafeEqual(givenHash, this.passwordHash)
     );
+  }
+
+  private buildPayload() {
+    return {
+      userId: this.userId,
+      jwtTokensVersion: this.jwtTokensVersion,
+      roles: this.roles,
+      username: this.username,
+    }
   }
 
   private signJwt(
