@@ -160,10 +160,9 @@ describe(`${User.name}`, () => {
       },
     ];
 
-    test.each(throwsTestCases)('$name', async ({ user, now, token, authConfig }) => {
+    test.each(throwsTestCases)('$name', ({ user, now, token, authConfig }) => {
       jest.useFakeTimers().setSystemTime(now);
-      await expect(user.refresh(token, authConfig))
-        .rejects.toThrow(REFRESH_TOKEN_NOT_FOUND);
+      expect(() => user.refresh(token, authConfig)).toThrow(REFRESH_TOKEN_NOT_FOUND);
     });
 
     const validTestCases = [
@@ -186,10 +185,10 @@ describe(`${User.name}`, () => {
       },
     ];
 
-    test.each(validTestCases)('$name', async ({ user, token, authConfig, now }) => {
+    test.each(validTestCases)('$name', ({ user, token, authConfig, now }) => {
       jest.useFakeTimers().setSystemTime(now);
 
-      const { accessToken, refreshToken } = await user.refresh(token, authConfig);
+      const { accessToken, refreshToken } = user.refresh(token, authConfig);
 
       const accessPayload = jwt.verify(
         accessToken,

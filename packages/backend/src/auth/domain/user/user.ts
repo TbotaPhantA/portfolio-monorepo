@@ -53,20 +53,22 @@ export class User {
     return { accessToken, refreshToken };
   }
 
-  async refresh(
-    oldRefreshToken: string,
-    authConfig: AuthConfig,
-  ): Promise<TokenPair> {
-    const stored = this.refreshTokens.find(rt => rt.token === oldRefreshToken);
+  refresh(oldRefreshToken: string, authConfig: AuthConfig): TokenPair {
+    const stored = this.refreshTokens.find(
+      (rt) => rt.token === oldRefreshToken,
+    );
     if (!stored || stored.isExpired()) {
       throw new UnauthorizedException(REFRESH_TOKEN_NOT_FOUND);
     }
 
-    this.refreshTokens = this.refreshTokens.filter(rt => rt !== stored);
+    this.refreshTokens = this.refreshTokens.filter((rt) => rt !== stored);
 
     const sharedPayload = this.buildPayload();
     const newAccessToken = this.signJwt(sharedPayload, authConfig.accessToken);
-    const newRefreshToken = this.signJwt(sharedPayload, authConfig.refreshToken);
+    const newRefreshToken = this.signJwt(
+      sharedPayload,
+      authConfig.refreshToken,
+    );
 
     this.refreshTokens.push(
       RefreshToken.createByRefreshToken(newRefreshToken, this.userId),
@@ -97,7 +99,7 @@ export class User {
       jwtTokensVersion: this.jwtTokensVersion,
       roles: this.roles,
       username: this.username,
-    }
+    };
   }
 
   private signJwt(
