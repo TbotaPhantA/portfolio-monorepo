@@ -46,7 +46,7 @@ export class Post {
       title: dto.title,
       body: dto.body,
       tags: dto.tags,
-      comments: dto.comments.map((c) => Comment.createByDto(c, user)),
+      comments: [],
     });
   }
 }
