@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
-import { Database } from '../../../infrastructure/db/db.schema';
+import { Database, UserRoleEnum } from '../../../infrastructure/db/db.schema';
 import { Kysely, sql, } from 'kysely';
 import { InjectKysely } from 'nestjs-kysely';
 import { User } from '../../domain/user/user';
@@ -19,7 +19,7 @@ export class UserRepository {
         return [
           'users.user_id as userId',
           'users.jwt_tokens_version as jwtTokensVersion',
-          'users.roles as roles',
+          sql<UserRoleEnum[]>`array_to_json(users.roles)`.as('roles'),
           'users.username as username',
           'users.salt as salt',
           'users.password_hash as passwordHash',
