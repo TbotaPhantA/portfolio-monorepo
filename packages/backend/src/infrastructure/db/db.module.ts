@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
-import { ParseJSONResultsPlugin, PostgresDialect } from 'kysely';
+import { CamelCasePlugin, ParseJSONResultsPlugin, PostgresDialect } from 'kysely';
 import { KyselyModule } from 'nestjs-kysely';
 import { Pool } from 'pg';
 import { config } from '../config/config';
@@ -16,7 +16,7 @@ const kyselyModule = KyselyModule.forRoot({
       max: 10,
     }),
   }),
-  plugins: [new ParseJSONResultsPlugin()]
+  plugins: [new ParseJSONResultsPlugin(), new CamelCasePlugin()]
 });
 
 @Module({

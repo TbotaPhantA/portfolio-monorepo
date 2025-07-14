@@ -27,38 +27,38 @@ export enum LanguageEnum {
  * Table definitions
  */
 export interface Users {
-  user_id: Generated<number>;
-  jwt_tokens_version: number;
+  userId: Generated<number>;
+  jwtTokensVersion: number;
   roles: UserRoleEnum[];
   username: string;
   salt: Buffer;
-  password_hash: Buffer;
+  passwordHash: Buffer;
 }
 
 export interface RefreshTokens {
-  refresh_token_id: Generated<number>;
-  user_id: number;
-  expires_at: Date;
+  refreshTokenId: Generated<number>;
+  userId: number;
+  expiresAt: Date;
   token: string;
 }
 
 export interface Posts {
-  post_id: Generated<number>;
-  user_id: number;
+  postId: Generated<number>;
+  userId: number;
   status: PostStatusEnum;
   type: PostTypeEnum;
   language: LanguageEnum;
-  created_at: Generated<Date>;
+  createdAt: Generated<Date>;
   title: string;
   body: string;
   tags: string[];
 }
 
 export interface Comments {
-  comment_id: Generated<number>;
-  post_id: number;
-  user_id: number;
-  created_at: Generated<Date>;
+  commentId: Generated<number>;
+  postId: number;
+  userId: number;
+  createdAt: Generated<Date>;
   path: string; // ltree represented as string
   body: string;
 }
@@ -68,7 +68,7 @@ export interface Comments {
  */
 export interface Database {
   users: Users;
-  refresh_tokens: RefreshTokens;
+  refreshTokens: RefreshTokens;
   posts: Posts;
   comments: Comments;
 }

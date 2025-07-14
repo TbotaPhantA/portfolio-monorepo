@@ -1,11 +1,10 @@
-/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { Database, UserRoleEnum } from '../../../infrastructure/db/db.schema';
-import { Kysely, sql, } from 'kysely';
+import { Kysely, sql } from 'kysely';
 import { InjectKysely } from 'nestjs-kysely';
 import { User } from '../../domain/user/user';
 import { RefreshToken } from '../../domain/user/refreshToken/refreshToken';
-import { jsonBuildObject } from 'kysely/helpers/postgres'
+import { jsonBuildObject } from 'kysely/helpers/postgres';
 
 @Injectable()
 export class UserRepository {
@@ -14,41 +13,45 @@ export class UserRepository {
   async findByUsername(username: string): Promise<User | null> {
     const query = this.db
       .selectFrom('users')
-      .leftJoin('refresh_tokens', 'users.user_id', 'refresh_tokens.user_id')
+      .leftJoin('refreshTokens', 'users.userId', 'refreshTokens.userId')
       .select(({ fn, ref }) => {
         return [
-          'users.user_id as userId',
-          'users.jwt_tokens_version as jwtTokensVersion',
+          'users.userId',
+          'users.jwtTokensVersion',
           sql<UserRoleEnum[]>`array_to_json(users.roles)`.as('roles'),
-          'users.username as username',
-          'users.salt as salt',
-          'users.password_hash as passwordHash',
-          fn.coalesce(
-            fn.jsonAgg(
-              jsonBuildObject({
-                refresh_token_id: ref('refresh_tokens.refresh_token_id'),
-                user_id: ref('refresh_tokens.user_id'),
-                expires_at: ref('refresh_tokens.expires_at'),
-                token: ref('refresh_tokens.token'),
-              })
-            ).filterWhere('refresh_tokens.refresh_token_id', 'is not', null),
-            sql`'[]'`
-          ).as('refresh_tokens')
-        ]
+          'users.username',
+          'users.salt',
+          'users.passwordHash',
+          fn
+            .coalesce(
+              fn
+                .jsonAgg(
+                  jsonBuildObject({
+                    refreshTokenId: ref('refreshTokens.refreshTokenId'),
+                    userId: ref('refreshTokens.userId'),
+                    expiresAt: ref('refreshTokens.expiresAt'),
+                    token: ref('refreshTokens.token'),
+                  }),
+                )
+                .filterWhere('refreshTokens.userId', 'is not', null),
+              sql`'[]'`,
+            )
+            .as('refreshTokens'),
+        ];
       })
       .where('users.username', '=', username)
-      .groupBy(['users.user_id'])
+      .groupBy(['users.userId']);
 
     const raw = await query.executeTakeFirst();
 
     if (!raw) return null;
 
-    const refreshTokens = raw.refresh_tokens.map(
+    const refreshTokens = raw.refreshTokens.map(
       (t) =>
         new RefreshToken({
-          refreshTokenId: t.refresh_token_id!,
-          userId: t.user_id!,
-          expiresAt: t.expires_at!,
+          refreshTokenId: t.refreshTokenId!,
+          userId: t.userId!,
+          expiresAt: t.expiresAt!,
           token: t.token!,
         }),
     );
@@ -65,12 +68,15 @@ export class UserRepository {
   }
 
   async insertRefreshTokens(refreshTokens: RefreshToken[]): Promise<void> {
-    await this.db.insertInto('refresh_tokens')
-      .values(refreshTokens.map(token => ({
-        user_id: token.userId,
-        expires_at: token.expiresAt,
-        token: token.token,
-      })))
-      .execute()
+    await this.db
+      .insertInto('refreshTokens')
+      .values(
+        refreshTokens.map((token) => ({
+          userId: token.userId,
+          expiresAt: token.expiresAt,
+          token: token.token,
+        })),
+      )
+      .execute();
   }
 }

@@ -12,7 +12,7 @@ export class PostsRepository {
     const result = await this.db
       .insertInto('posts')
       .values({
-        user_id: post.userId,
+        userId: post.userId,
         status: post.status,
         type: post.type,
         language: post.language,
@@ -20,10 +20,10 @@ export class PostsRepository {
         body: post.body,
         tags: post.tags,
       })
-      .returning(['post_id', 'created_at'])
-      .executeTakeFirstOrThrow()
+      .returning(['postId', 'createdAt'])
+      .executeTakeFirstOrThrow();
 
-    post.postId = result.post_id;
-    post.createdAt = result.created_at;
+    post.postId = result.postId;
+    post.createdAt = result.createdAt;
   }
 }
