@@ -5,7 +5,7 @@ import { PostsCreateService } from './services/postsCreate.service';
 import { Authentication } from '../../auth/application/decorators/authentication';
 import { UserPayload } from '../../infrastructure/shared/types/userPayload';
 import { UserRoleEnum } from '../../auth/domain/enums/userRole.enum';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 
 @ApiBearerAuth()
 @Authentication([UserRoleEnum.ADMIN])
@@ -14,6 +14,7 @@ export class PostsController {
   constructor(private readonly createService: PostsCreateService) {}
 
   @Post()
+  @ApiResponse({ type: PostResponseDto })
   async createPost(
     @Body() dto: CreatePostDto,
     @Req() { user }: { user: UserPayload }, // TODO: validate user payload
