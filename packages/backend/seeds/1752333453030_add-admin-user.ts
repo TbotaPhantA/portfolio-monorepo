@@ -41,8 +41,8 @@ export async function seed(db: Kysely<Database>): Promise<void> {
     .values({
       username: ADMIN_USERNAME,
       salt,
-      password_hash: derived,
-      jwt_tokens_version: 1,
+      passwordHash: derived,
+      jwtTokensVersion: 1,
       roles: [UserRoleEnum.ADMIN],
     })
     .execute()
