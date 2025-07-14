@@ -2,10 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { Database } from '../../infrastructure/db/db.schema';
 import { Kysely } from 'kysely';
 import { Post } from '../domain/post/post';
+import { InjectKysely } from 'nestjs-kysely';
 
 @Injectable()
 export class PostsRepository {
-  constructor(private readonly db: Kysely<Database>) {}
+  constructor(@InjectKysely() private readonly db: Kysely<Database>) {}
 
   async insertAndFillInPost(post: Post): Promise<void> {
     const result = await this.db
