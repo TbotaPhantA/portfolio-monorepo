@@ -7,7 +7,6 @@ import {
   PLACEHOLDER_DATE,
   PLACEHOLDER_ID,
 } from '../../../../src/infrastructure/shared/constants';
-import { CommentBuilder } from './comment.builder';
 
 export class PostBuilder {
   static get defaultPreInserted(): InjectionBuilder<Post> {
@@ -22,7 +21,7 @@ export class PostBuilder {
         title: 'title',
         body: 'body',
         tags: ['tag1'],
-        comments: [CommentBuilder.defaultPreInserted.result],
+        comments: [],
       }),
     );
   }
