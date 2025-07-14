@@ -10,6 +10,7 @@ import {
   USERNAME_OR_PASSWORD_IS_NOT_VALID,
 } from '../../../infrastructure/shared/constants';
 import * as jwt from 'jsonwebtoken';
+import { UserPayload } from '../../../infrastructure/shared/types/userPayload';
 
 export type AuthConfig = (typeof config)['auth'];
 export type TokenPair = { accessToken: string; refreshToken: string };
@@ -93,7 +94,7 @@ export class User {
     );
   }
 
-  private buildPayload() {
+  private buildPayload(): UserPayload {
     return {
       userId: this.userId,
       jwtTokensVersion: this.jwtTokensVersion,
