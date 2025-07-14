@@ -48,7 +48,7 @@ export interface Posts {
   status: PostStatusEnum;
   type: PostTypeEnum;
   language: LanguageEnum;
-  created_at: Date;
+  created_at: Generated<Date>;
   title: string;
   body: string;
   tags: string[];
@@ -58,7 +58,7 @@ export interface Comments {
   comment_id: Generated<number>;
   post_id: number;
   user_id: number;
-  created_at: Date;
+  created_at: Generated<Date>;
   path: string; // ltree represented as string
   body: string;
 }
