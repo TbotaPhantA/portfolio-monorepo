@@ -27,12 +27,12 @@ export class CreatePostDto {
 
   @IsNotEmpty()
   @IsString()
-  @ApiProperty({ example: 'test body'})
+  @ApiProperty({ example: 'test body' })
   body: string;
 
   @IsNotEmpty()
   @IsArray()
   @IsString({ each: true })
-  @ApiProperty({ example: ['test tag']})
+  @ApiProperty({ example: ['test tag'] })
   tags: string[];
 }

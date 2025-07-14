@@ -21,13 +21,13 @@ export class PostResponseDto {
   @ApiProperty({ example: LanguageEnum.EN })
   language: LanguageEnum;
 
-  @ApiProperty({ example: new Date(2022, 0, 3)})
+  @ApiProperty({ example: new Date(2022, 0, 3) })
   createdAt: Date;
 
   @ApiProperty({ example: 'test title' })
   title: string;
 
-  @ApiProperty({ example: 'test body'})
+  @ApiProperty({ example: 'test body' })
   body: string;
 
   @ApiProperty({ example: ['test tag'] })
@@ -37,7 +37,7 @@ export class PostResponseDto {
   comments: CommentResponseDto[];
 
   static from(post: Post): PostResponseDto {
-    const dto = new PostResponseDto()
+    const dto = new PostResponseDto();
 
     dto.postId = post.postId;
     dto.userId = post.userId;
@@ -48,7 +48,7 @@ export class PostResponseDto {
     dto.title = post.title;
     dto.body = post.body;
     dto.tags = post.tags;
-    dto.comments = post.comments.map(c => CommentResponseDto.from(c));
+    dto.comments = post.comments.map((c) => CommentResponseDto.from(c));
 
     return dto;
   }

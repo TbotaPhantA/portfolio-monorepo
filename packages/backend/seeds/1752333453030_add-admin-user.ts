@@ -1,4 +1,4 @@
-import type { Kysely } from 'kysely'
+import type { Kysely } from 'kysely';
 import { UserRoleEnum } from '../src/infrastructure/db/db.schema';
 import { randomBytes } from 'crypto';
 import { scrypt } from '../src/infrastructure/shared/utils/scrypt';
@@ -12,7 +12,7 @@ export async function seed(db: Kysely<Database>): Promise<void> {
     ENCODING,
     ADMIN_USERNAME,
     ADMIN_PASSWORD,
-  } = process.env
+  } = process.env;
 
   if (
     !SALT_SIZE ||
@@ -22,18 +22,18 @@ export async function seed(db: Kysely<Database>): Promise<void> {
     !ADMIN_USERNAME ||
     !ADMIN_PASSWORD
   ) {
-    throw new Error('Missing required environment variables')
+    throw new Error('Missing required environment variables');
   }
 
-  const saltSize = parseInt(SALT_SIZE, 10)
-  const keyLen = parseInt(KEY_LENGTH_IN_BYTES, 10)
+  const saltSize = parseInt(SALT_SIZE, 10);
+  const keyLen = parseInt(KEY_LENGTH_IN_BYTES, 10);
 
   // 1. Generate random salt
-  const salt = randomBytes(saltSize)
+  const salt = randomBytes(saltSize);
 
   // 2. Derive password hash with scrypt
-  const peppered = ADMIN_PASSWORD + PASSWORD_PEPPER
-  const derived = await scrypt(peppered, salt, keyLen)
+  const peppered = ADMIN_PASSWORD + PASSWORD_PEPPER;
+  const derived = await scrypt(peppered, salt, keyLen);
 
   // 3. Insert admin user
   await db
@@ -45,7 +45,7 @@ export async function seed(db: Kysely<Database>): Promise<void> {
       jwtTokensVersion: 1,
       roles: [UserRoleEnum.ADMIN],
     })
-    .execute()
+    .execute();
 
-  console.log(`Admin user '${ADMIN_USERNAME}' seeded successfully.`)
+  console.log(`Admin user '${ADMIN_USERNAME}' seeded successfully.`);
 }

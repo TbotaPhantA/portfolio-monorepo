@@ -1,6 +1,7 @@
 import {
   CanActivate,
-  ExecutionContext, ForbiddenException,
+  ExecutionContext,
+  ForbiddenException,
   Injectable,
 } from '@nestjs/common';
 import { UserRoleEnum } from '../../domain/enums/userRole.enum';
@@ -11,12 +12,14 @@ import { doIntersect } from '../../../infrastructure/shared/utils/doIntersect';
 export class RolesGuard implements CanActivate {
   constructor(private readonly availableRoles: UserRoleEnum[]) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
+  canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     const user = request['user'];
     assert.ok(user, 'No user in request!');
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
     if (!doIntersect(user.roles, this.availableRoles)) {
-      throw new ForbiddenException()
+      throw new ForbiddenException();
     }
     return true;
   }

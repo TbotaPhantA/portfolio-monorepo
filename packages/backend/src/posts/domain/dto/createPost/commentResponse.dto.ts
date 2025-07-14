@@ -17,7 +17,7 @@ export class CommentResponseDto {
   @ApiProperty({ example: '1.1' })
   path: string;
 
-  @ApiProperty({ example: 'test comment'})
+  @ApiProperty({ example: 'test comment' })
   body: string;
 
   static from(comment: Comment) {
@@ -27,8 +27,8 @@ export class CommentResponseDto {
     dto.postId = comment.postId;
     dto.userId = comment.userId;
     dto.createdAt = comment.createdAt;
-    dto.path  = comment.path;
-    dto.body  = comment.body;
+    dto.path = comment.path;
+    dto.body = comment.body;
 
     return dto;
   }
