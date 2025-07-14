@@ -20,6 +20,7 @@ export class PostsController {
   ) {}
 
   @Post('/search-by-filters')
+  @ApiResponse({ type: SearchPostsResponseDto })
   async searchPosts(
     @Body() dto: SearchPostsParams,
   ): Promise<SearchPostsResponseDto> {
