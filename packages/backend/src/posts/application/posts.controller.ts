@@ -5,7 +5,9 @@ import { PostsCreateService } from './services/postsCreate.service';
 import { Authentication } from '../../auth/application/decorators/authentication';
 import { UserPayload } from '../../infrastructure/shared/types/userPayload';
 import { UserRoleEnum } from '../../auth/domain/enums/userRole.enum';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Authentication([UserRoleEnum.ADMIN])
 @Controller('posts')
 export class PostsController {
