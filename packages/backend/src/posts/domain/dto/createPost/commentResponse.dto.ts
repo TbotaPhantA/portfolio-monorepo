@@ -2,22 +2,22 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Comment } from '../../post/comment/comment';
 
 export class CommentResponseDto {
-  @ApiProperty()
+  @ApiProperty({ example: 1 })
   commentId: number;
 
-  @ApiProperty()
+  @ApiProperty({ example: 1 })
   postId: number;
 
-  @ApiProperty()
+  @ApiProperty({ example: 1 })
   userId: number;
 
-  @ApiProperty()
+  @ApiProperty({ example: new Date(2022, 0, 3) })
   createdAt: Date;
 
-  @ApiProperty()
+  @ApiProperty({ example: '1.1' })
   path: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'test comment'})
   body: string;
 
   static from(comment: Comment) {

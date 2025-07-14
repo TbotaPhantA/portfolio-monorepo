@@ -6,34 +6,34 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Post } from '../../post/post';
 
 export class PostResponseDto {
-  @ApiProperty()
+  @ApiProperty({ example: 1 })
   postId: number;
 
-  @ApiProperty()
+  @ApiProperty({ example: 1 })
   userId: number;
 
-  @ApiProperty()
+  @ApiProperty({ example: PostStatusEnum.DRAFT })
   status: PostStatusEnum;
 
-  @ApiProperty()
+  @ApiProperty({ example: PostTypeEnum.ARTICLE })
   type: PostTypeEnum;
 
-  @ApiProperty()
+  @ApiProperty({ example: LanguageEnum.EN })
   language: LanguageEnum;
 
-  @ApiProperty()
+  @ApiProperty({ example: new Date(2022, 0, 3)})
   createdAt: Date;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'test title' })
   title: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'test body'})
   body: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: ['test tag'] })
   tags: string[];
 
-  @ApiProperty()
+  @ApiProperty({ type: [CommentResponseDto] })
   comments: CommentResponseDto[];
 
   static from(post: Post): PostResponseDto {

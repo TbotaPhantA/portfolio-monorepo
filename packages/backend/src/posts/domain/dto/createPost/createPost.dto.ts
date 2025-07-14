@@ -7,32 +7,32 @@ import { ApiProperty } from '@nestjs/swagger';
 export class CreatePostDto {
   @IsNotEmpty()
   @IsEnum(PostStatusEnum)
-  @ApiProperty()
+  @ApiProperty({ example: PostStatusEnum.DRAFT })
   status: PostStatusEnum;
 
   @IsNotEmpty()
   @IsEnum(PostTypeEnum)
-  @ApiProperty()
+  @ApiProperty({ example: PostTypeEnum.ARTICLE })
   type: PostTypeEnum;
 
   @IsNotEmpty()
   @IsEnum(LanguageEnum)
-  @ApiProperty()
+  @ApiProperty({ example: LanguageEnum.EN })
   language: LanguageEnum;
 
   @IsNotEmpty()
   @IsString()
-  @ApiProperty()
+  @ApiProperty({ example: 'test title' })
   title: string;
 
   @IsNotEmpty()
   @IsString()
-  @ApiProperty()
+  @ApiProperty({ example: 'test body'})
   body: string;
 
   @IsNotEmpty()
   @IsArray()
   @IsString({ each: true })
-  @ApiProperty()
+  @ApiProperty({ example: ['test tag']})
   tags: string[];
 }
