@@ -1,7 +1,7 @@
 import { Body, Controller, Post, Req } from '@nestjs/common';
 import { CreatePostDto } from '../domain/dto/createPost/createPost.dto';
 import { PostResponseDto } from '../domain/dto/createPost/postResponse.dto';
-import { PostsCreateService } from './services/postsCreate.service';
+import { CreatePostsService } from './services/createPosts.service';
 import { Authentication } from '../../auth/application/decorators/authentication';
 import { UserPayload } from '../../infrastructure/shared/types/userPayload';
 import { UserRoleEnum } from '../../auth/domain/enums/userRole.enum';
@@ -11,7 +11,7 @@ import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 @Authentication([UserRoleEnum.ADMIN])
 @Controller('posts')
 export class PostsController {
-  constructor(private readonly createService: PostsCreateService) {}
+  constructor(private readonly createService: CreatePostsService) {}
 
   @Post()
   @ApiResponse({ type: PostResponseDto })
