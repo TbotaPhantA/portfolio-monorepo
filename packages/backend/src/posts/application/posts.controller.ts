@@ -35,4 +35,12 @@ export class PostsController {
   ): Promise<PostResponseDto> {
     return this.createService.create(dto, user);
   }
+
+  /**
+   * TODO:
+   * 1. PATCH /posts/edit
+   * 2. PATCH /posts/add-comment
+   * 3. PATCH /posts/delete-comment
+   * 4. DELETE /posts/delete
+   */
 }
