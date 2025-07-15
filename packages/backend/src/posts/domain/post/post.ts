@@ -8,7 +8,7 @@ import {
   PLACEHOLDER_DATE,
   PLACEHOLDER_ID,
 } from '../../../infrastructure/shared/constants';
-import type { User } from '../../../auth/domain/user/user';
+import { UserPayload } from '../../../infrastructure/shared/types/userPayload';
 
 export class Post {
   postId: number;
@@ -35,7 +35,7 @@ export class Post {
     this.comments = raw.comments;
   }
 
-  static createByDto(dto: CreatePostDto, user: Pick<User, 'userId'>): Post {
+  static createByDto(dto: CreatePostDto, user: UserPayload): Post {
     return new Post({
       postId: PLACEHOLDER_ID,
       userId: user.userId,

@@ -1,7 +1,7 @@
 import { Post } from '../../../../../src/posts/domain/post/post';
 import { CreatePostDtoBuilder } from '../../../../__fixtures__/builders/createPost/createPostDto.builder';
 import { PostBuilder } from '../../../../__fixtures__/builders/post/post.builder';
-import { User } from '../../../../../src/auth/domain/user/user';
+import { UserPayloadBuilder } from '../../../../__fixtures__/builders/user/userPayload.builder';
 
 describe(`${Post.name}`, () => {
   describe(`${Post.createByDto.name}`, () => {
@@ -9,7 +9,7 @@ describe(`${Post.name}`, () => {
       {
         toString: () => '1 default creation - should be properly created',
         dto: CreatePostDtoBuilder.defaultAll.result,
-        user: { userId: 1 } satisfies Pick<User, 'userId'>,
+        user: UserPayloadBuilder.defaultAll.result,
         expectedPost: PostBuilder.defaultPreInserted.result,
       },
       {
@@ -17,7 +17,7 @@ describe(`${Post.name}`, () => {
         dto: CreatePostDtoBuilder.defaultAll.with({
           tags: ['sdfsdf', 'sdfsdf'],
         }).result,
-        user: { userId: 1 } satisfies Pick<User, 'userId'>,
+        user: UserPayloadBuilder.defaultAll.result,
         expectedPost: PostBuilder.defaultPreInserted.with({
           tags: ['sdfsdf', 'sdfsdf'],
         }).result,
