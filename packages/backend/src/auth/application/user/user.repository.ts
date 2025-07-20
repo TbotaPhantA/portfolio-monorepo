@@ -1,17 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { Database, UserRoleEnum } from '../../../infrastructure/db/db.schema';
-import { Kysely, sql } from 'kysely';
-import { InjectKysely } from 'nestjs-kysely';
+import { UserRoleEnum } from '../../../infrastructure/db/db.schema';
+import { sql } from 'kysely';
 import { User } from '../../domain/user/user';
 import { RefreshToken } from '../../domain/user/refreshToken/refreshToken';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
+import { TransactionHost } from '@nestjs-cls/transactional';
+import { KyselyCLS } from '../../../infrastructure/shared/types/kyselyCLS';
 
 @Injectable()
 export class UserRepository {
-  constructor(@InjectKysely() private readonly db: Kysely<Database>) {}
+  constructor(private readonly db: TransactionHost<KyselyCLS>) {}
 
   async findByUsername(username: string): Promise<User | null> {
-    const query = this.db
+    const query = this.db.tx
       .selectFrom('users')
       .select((eb) => {
         return [
@@ -48,7 +49,7 @@ export class UserRepository {
   }
 
   async insertRefreshTokens(refreshTokens: RefreshToken[]): Promise<void> {
-    await this.db
+    await this.db.tx
       .insertInto('refreshTokens')
       .values(
         refreshTokens.map((token) => ({

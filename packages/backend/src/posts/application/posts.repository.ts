@@ -1,19 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { Database } from '../../infrastructure/db/db.schema';
-import { Kysely } from 'kysely';
 import { Post } from '../domain/post/post';
-import { InjectKysely } from 'nestjs-kysely';
 import { SearchPostsParams } from '../domain/dto/search/searchPostsParamDto';
 import { SearchPostsResponseDto } from '../domain/dto/search/searchPostsResponseDto';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { Comment } from '../domain/post/comment/comment';
+import { KyselyCLS } from '../../infrastructure/shared/types/kyselyCLS';
+import { TransactionHost } from '@nestjs-cls/transactional';
 
 @Injectable()
 export class PostsRepository {
-  constructor(@InjectKysely() private readonly db: Kysely<Database>) {}
+  constructor(private readonly db: TransactionHost<KyselyCLS>) {}
 
   async findOneById(postId: number): Promise<Post | null> {
-    const query = this.db
+    const query = this.db.tx
       .selectFrom('posts')
       .select((eb) => {
         return [
@@ -57,7 +56,7 @@ export class PostsRepository {
   async searchPosts(
     search: SearchPostsParams,
   ): Promise<SearchPostsResponseDto> {
-    let query = this.db
+    let query = this.db.tx
       .selectFrom('posts')
       .select([
         'postId',
@@ -87,7 +86,7 @@ export class PostsRepository {
   }
 
   async insertAndFillInPost(post: Post): Promise<void> {
-    const result = await this.db
+    const result = await this.db.tx
       .insertInto('posts')
       .values({
         userId: post.userId,
@@ -108,7 +107,7 @@ export class PostsRepository {
   async update(post: Post): Promise<void> {
     const changes = post.changes();
 
-    await this.db
+    await this.db.tx
       .updateTable('posts')
       .where('posts.postId', '=', post.postId)
       .set(changes)

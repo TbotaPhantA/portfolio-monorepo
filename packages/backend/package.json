@@ -31,6 +31,8 @@
   "dependencies": {
     "@fastify/cookie": "^11.0.2",
     "@fastify/static": "^8.2.0",
+    "@nestjs-cls/transactional": "^3.1.0",
+    "@nestjs-cls/transactional-adapter-kysely": "^1.4.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-fastify": "^11.1.3",
@@ -46,6 +48,7 @@
     "jsonwebtoken": "^9.0.2",
     "kysely": "^0.28.2",
     "lodash": "^4.17.21",
+    "nestjs-cls": "^6.0.1",
     "nestjs-kysely": "^3.0.0",
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",

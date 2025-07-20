@@ -5,6 +5,8 @@ import { UpdatePostDto } from '../../domain/dto/updatePost/updatePost.dto';
 import { UserPayload } from '../../../infrastructure/shared/types/userPayload';
 import { MapDbConstraintErrors } from '../decorators/mapDBConstraintErrors';
 import { ReadPostsService } from './readPosts.service';
+import { Propagation, Transactional } from '@nestjs-cls/transactional';
+import { KyselyCLS } from '../../../infrastructure/shared/types/kyselyCLS';
 
 @Injectable()
 export class UpdatePostsService {
@@ -13,6 +15,9 @@ export class UpdatePostsService {
     private readonly readService: ReadPostsService,
   ) {}
 
+  @Transactional<KyselyCLS>(Propagation.Required, {
+    isolationLevel: 'read committed',
+  })
   @MapDbConstraintErrors()
   async updateByDto(
     dto: UpdatePostDto,
