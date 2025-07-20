@@ -4,11 +4,13 @@ import { CreatePostDto } from '../../domain/dto/createPost/createPost.dto';
 import { Post } from '../../domain/post/post';
 import { UserPayload } from '../../../infrastructure/shared/types/userPayload';
 import { PostsRepository } from '../posts.repository';
+import { MapDbConstraintErrors } from '../decorators/mapDBConstraintErrors';
 
 @Injectable()
 export class CreatePostsService {
   constructor(private readonly repo: PostsRepository) {}
 
+  @MapDbConstraintErrors()
   async create(
     dto: CreatePostDto,
     user: UserPayload,

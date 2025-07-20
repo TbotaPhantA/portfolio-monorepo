@@ -5,11 +5,13 @@ import { POST_NOT_FOUND } from '../../../infrastructure/shared/constants';
 import { UpdatePostDto } from '../../domain/dto/updatePost/updatePost.dto';
 import { UserPayload } from '../../../infrastructure/shared/types/userPayload';
 import { Post } from '../../domain/post/post';
+import { MapDbConstraintErrors } from '../decorators/mapDBConstraintErrors';
 
 @Injectable()
 export class UpdatePostsService {
   constructor(private readonly repo: PostsRepository) {}
 
+  @MapDbConstraintErrors()
   async updateByDto(
     dto: UpdatePostDto,
     user: UserPayload,
