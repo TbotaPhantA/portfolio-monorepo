@@ -9,6 +9,13 @@ import {
   PLACEHOLDER_ID,
 } from '../../../infrastructure/shared/constants';
 import { UserPayload } from '../../../infrastructure/shared/types/userPayload';
+import { UpdatePostDto } from '../dto/updatePost/updatePost.dto';
+import { ForbiddenException } from '@nestjs/common';
+import * as assert from 'node:assert';
+import * as _ from 'lodash';
+import { objectDiff } from '../../../infrastructure/shared/utils/objectDiff';
+
+type RawPost = NoMethods<Post>;
 
 export class Post {
   postId: number;
@@ -21,8 +28,9 @@ export class Post {
   body: string;
   tags: string[];
   comments: Comment[];
+  #original: Post;
 
-  constructor(raw: NoMethods<Post>) {
+  constructor(raw: RawPost) {
     this.postId = raw.postId;
     this.userId = raw.userId;
     this.status = raw.status;
@@ -33,6 +41,11 @@ export class Post {
     this.body = raw.body;
     this.tags = raw.tags;
     this.comments = raw.comments;
+    this.#original = _.cloneDeep(this);
+  }
+
+  static createFromDB(raw: RawPost): Post {
+    return new Post(raw);
   }
 
   static createByDto(dto: CreatePostDto, user: UserPayload): Post {
@@ -48,5 +61,19 @@ export class Post {
       tags: dto.tags,
       comments: [],
     });
+  }
+
+  updateByDto(dto: UpdatePostDto, user: UserPayload): void {
+    assert.ok(user.userId === this.userId, new ForbiddenException());
+
+    this.status = dto.status;
+    this.type = dto.type;
+    this.title = dto.title;
+    this.body = dto.body;
+    this.tags = dto.tags;
+  }
+
+  changes(): Partial<RawPost> {
+    return objectDiff(this, this.#original);
   }
 }
