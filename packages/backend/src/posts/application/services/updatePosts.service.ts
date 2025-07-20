@@ -1,34 +1,26 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UpdatePostResponseDto } from '../../domain/dto/updatePost/updatePostResponse.dto';
 import { PostsRepository } from '../posts.repository';
-import { POST_NOT_FOUND } from '../../../infrastructure/shared/constants';
 import { UpdatePostDto } from '../../domain/dto/updatePost/updatePost.dto';
 import { UserPayload } from '../../../infrastructure/shared/types/userPayload';
-import { Post } from '../../domain/post/post';
 import { MapDbConstraintErrors } from '../decorators/mapDBConstraintErrors';
+import { ReadPostsService } from './readPosts.service';
 
 @Injectable()
 export class UpdatePostsService {
-  constructor(private readonly repo: PostsRepository) {}
+  constructor(
+    private readonly repo: PostsRepository,
+    private readonly readService: ReadPostsService,
+  ) {}
 
   @MapDbConstraintErrors()
   async updateByDto(
     dto: UpdatePostDto,
     user: UserPayload,
   ): Promise<UpdatePostResponseDto> {
-    const post = await this.getPostById(dto.postId);
+    const post = await this.readService.getPostById(dto.postId);
     post.updateByDto(dto, user);
     await this.repo.update(post);
     return UpdatePostResponseDto.from(post);
-  }
-
-  private async getPostById(postId: number): Promise<Post> {
-    const post = await this.repo.findOneById(postId);
-
-    if (!post) {
-      throw new BadRequestException(POST_NOT_FOUND);
-    }
-
-    return post;
   }
 }
