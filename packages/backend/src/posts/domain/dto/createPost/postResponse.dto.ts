@@ -4,6 +4,7 @@ import { LanguageEnum } from '../../enums/language.enum';
 import { CommentResponseDto } from './commentResponse.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Post } from '../../post/post';
+import { NoMethods } from '../../../../infrastructure/shared/types/noMethods';
 
 export class PostResponseDto {
   @ApiProperty({ example: 1 })
@@ -36,7 +37,7 @@ export class PostResponseDto {
   @ApiProperty({ type: [CommentResponseDto] })
   comments: CommentResponseDto[];
 
-  static from(post: Post): PostResponseDto {
+  static from(post: NoMethods<Post>): PostResponseDto {
     const dto = new PostResponseDto();
 
     dto.postId = post.postId;
