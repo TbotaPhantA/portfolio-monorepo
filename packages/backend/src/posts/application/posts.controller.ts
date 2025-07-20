@@ -9,6 +9,9 @@ import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 import { SearchPostsParams } from '../domain/dto/search/searchPostsParamDto';
 import { ReadPostsService } from './services/readPosts.service';
 import { SearchPostsResponseDto } from '../domain/dto/search/searchPostsResponseDto';
+import { UpdatePostResponseDto } from '../domain/dto/updatePost/updatePostResponse.dto';
+import { UpdatePostDto } from '../domain/dto/updatePost/updatePost.dto';
+import { UpdatePostsService } from './services/updatePosts.service';
 
 @ApiBearerAuth()
 @Authentication([UserRoleEnum.ADMIN])
@@ -17,9 +20,10 @@ export class PostsController {
   constructor(
     private readonly readService: ReadPostsService,
     private readonly createService: CreatePostsService,
+    private readonly updateService: UpdatePostsService,
   ) {}
 
-  @Post('/search-by-filters')
+  @Post('/search-posts')
   @ApiResponse({ type: SearchPostsResponseDto })
   async searchPosts(
     @Body() dto: SearchPostsParams,
@@ -27,18 +31,26 @@ export class PostsController {
     return this.readService.searchPosts(dto);
   }
 
-  @Post()
+  @Post('/create-post')
   @ApiResponse({ type: PostResponseDto })
   async createPost(
     @Body() dto: CreatePostDto,
     @Req() { user }: { user: UserPayload }, // TODO: validate user payload
   ): Promise<PostResponseDto> {
-    return this.createService.create(dto, user);
+    return await this.createService.create(dto, user);
+  }
+
+  @Post('/update-post')
+  @ApiResponse({ type: UpdatePostResponseDto })
+  async updatePost(
+    @Body() dto: UpdatePostDto,
+    @Req() { user }: { user: UserPayload }, // TODO: validate user payload
+  ): Promise<UpdatePostResponseDto> {
+    return this.updateService.updateByDto(dto, user);
   }
 
   /**
    * TODO:
-   * 1. PATCH /posts/edit
    * 2. PATCH /posts/add-comment
    * 3. PATCH /posts/delete-comment
    * 4. DELETE /posts/delete
