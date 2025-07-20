@@ -62,18 +62,7 @@ export class PostsRepository {
         body: p.body!,
       }));
 
-      return new Post({
-        postId: post.postId,
-        userId: post.userId,
-        status: post.status,
-        type: post.type,
-        language: post.language,
-        createdAt: post.createdAt,
-        title: post.title,
-        body: post.body,
-        tags: post.tags,
-        comments,
-      });
+      return new Post({ ...post, comments });
   }
 
   async searchPosts(search: SearchPostsParams): Promise<SearchPostsResponseDto> {
