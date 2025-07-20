@@ -4,7 +4,7 @@ import { Kysely, sql } from 'kysely';
 import { InjectKysely } from 'nestjs-kysely';
 import { User } from '../../domain/user/user';
 import { RefreshToken } from '../../domain/user/refreshToken/refreshToken';
-import { jsonBuildObject } from 'kysely/helpers/postgres';
+import { jsonArrayFrom } from 'kysely/helpers/postgres';
 
 @Injectable()
 export class UserRepository {
@@ -13,8 +13,7 @@ export class UserRepository {
   async findByUsername(username: string): Promise<User | null> {
     const query = this.db
       .selectFrom('users')
-      .leftJoin('refreshTokens', 'users.userId', 'refreshTokens.userId')
-      .select(({ fn, ref }) => {
+      .select((eb) => {
         return [
           'users.userId',
           'users.jwtTokensVersion',
@@ -22,48 +21,29 @@ export class UserRepository {
           'users.username',
           'users.salt',
           'users.passwordHash',
-          fn
-            .coalesce(
-              fn
-                .jsonAgg(
-                  jsonBuildObject({
-                    refreshTokenId: ref('refreshTokens.refreshTokenId'),
-                    userId: ref('refreshTokens.userId'),
-                    expiresAt: ref('refreshTokens.expiresAt'),
-                    token: ref('refreshTokens.token'),
-                  }),
-                )
-                .filterWhere('refreshTokens.userId', 'is not', null),
-              sql`'[]'`,
-            )
-            .as('refreshTokens'),
+          jsonArrayFrom(
+            eb
+              .selectFrom('refreshTokens')
+              .select([
+                'refreshTokens.refreshTokenId',
+                'refreshTokens.userId',
+                'refreshTokens.expiresAt',
+                'refreshTokens.token',
+              ])
+              .whereRef('refreshTokens.userId', '=', 'users.userId'),
+          ).as('refreshTokens'),
         ];
       })
       .where('users.username', '=', username)
       .groupBy(['users.userId']);
 
-    const raw = await query.executeTakeFirst();
+    const userRow = await query.executeTakeFirst();
 
-    if (!raw) return null;
-
-    const refreshTokens = raw.refreshTokens.map(
-      (t) =>
-        new RefreshToken({
-          refreshTokenId: t.refreshTokenId!,
-          userId: t.userId!,
-          expiresAt: t.expiresAt!,
-          token: t.token!,
-        }),
-    );
+    if (!userRow) return null;
 
     return new User({
-      userId: raw.userId,
-      jwtTokensVersion: raw.jwtTokensVersion,
-      roles: raw.roles,
-      username: raw.username,
-      salt: raw.salt,
-      passwordHash: raw.passwordHash,
-      refreshTokens,
+      ...userRow,
+      refreshTokens: userRow.refreshTokens.map((t) => new RefreshToken(t)),
     });
   }
 

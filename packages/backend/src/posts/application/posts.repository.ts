@@ -1,12 +1,12 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { Database } from '../../infrastructure/db/db.schema';
-import { Kysely, sql } from 'kysely';
+import { Kysely } from 'kysely';
 import { Post } from '../domain/post/post';
 import { InjectKysely } from 'nestjs-kysely';
 import { SearchPostsParams } from '../domain/dto/search/searchPostsParamDto';
 import { SearchPostsResponseDto } from '../domain/dto/search/searchPostsResponseDto';
-import { jsonBuildObject } from 'kysely/helpers/postgres';
+import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { Comment } from '../domain/post/comment/comment';
 
 @Injectable()
@@ -14,10 +14,9 @@ export class PostsRepository {
   constructor(@InjectKysely() private readonly db: Kysely<Database>) {}
 
   async findOneById(postId: number): Promise<Post | null> {
-    const post = await this.db
+    const query = this.db
       .selectFrom('posts')
-      .leftJoin('comments', 'posts.postId', 'comments.postId')
-      .select(({ fn, ref }) => {
+      .select((eb) => {
         return [
         'posts.postId',
         'posts.userId',
@@ -28,41 +27,32 @@ export class PostsRepository {
         'posts.title',
         'posts.body',
         'posts.tags',
-          fn
-            .coalesce(
-              fn
-                .jsonAgg(
-                  jsonBuildObject({
-                    commentId: ref('comments.commentId'),
-                    postId: ref('comments.postId'),
-                    userId: ref('comments.userId'),
-                    createdAt: ref('comments.createdAt'),
-                    path: ref('comments.path'),
-                    body: ref('comments.body'),
-                  }),
-                )
-                .filterWhere('comments.commentId', 'is not', null),
-              sql<never[]>`'[]'`,
-            )
-            .as('comments'),
+        jsonArrayFrom(
+          eb
+            .selectFrom('comments')
+            .select([
+              'comments.commentId',
+              'comments.postId',
+              'comments.userId',
+              'comments.createdAt',
+              'comments.path',
+              'comments.body',
+            ])
+            .whereRef('comments.postId', '=', 'posts.postId')
+        ).as('comments')
         ]
       })
       .where('posts.postId', '=', postId)
       .groupBy('posts.postId')
-      .executeTakeFirst()
+
+      const post = await query.executeTakeFirst();
 
       if (!post) return null;
 
-      const comments = post.comments.map(p => new Comment({
-        commentId: p.commentId!,
-        postId: p.postId!,
-        userId: p.userId!,
-        createdAt: p.createdAt!,
-        path: p.path!,
-        body: p.body!,
-      }));
-
-      return new Post({ ...post, comments });
+      return new Post({
+        ...post,
+        comments: post.comments.map(comment => new Comment(comment))
+      });
   }
 
   async searchPosts(search: SearchPostsParams): Promise<SearchPostsResponseDto> {
