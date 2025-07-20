@@ -25,4 +25,21 @@ export class PostBuilder {
       }),
     );
   }
+
+  static get defaultAll(): InjectionBuilder<Post> {
+    return new InjectionBuilder<Post>(
+      new Post({
+        postId: 1,
+        userId: 1,
+        status: PostStatusEnum.DRAFT,
+        type: PostTypeEnum.ARTICLE,
+        language: LanguageEnum.EN,
+        createdAt: new Date(2022, 0, 3),
+        title: 'title',
+        body: 'body',
+        tags: ['tag1'],
+        comments: [],
+      }),
+    );
+  }
 }
