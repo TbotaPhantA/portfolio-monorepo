@@ -19,6 +19,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
+    "pipe": "npm run build && npm run lint && npm run test && npm run start:dev",
     "infra:up": "docker-compose --env-file .env up -d",
     "infra:down": "docker-compose --env-file .env down",
     "kysely:help": "kysely --help",
