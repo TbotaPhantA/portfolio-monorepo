@@ -17,7 +17,7 @@ export class RolesGuard implements CanActivate {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     const user = request['user'];
     assert.ok(user, 'No user in request!');
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (!doIntersect(user.roles, this.availableRoles)) {
       throw new ForbiddenException();
     }
