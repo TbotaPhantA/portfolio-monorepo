@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { Database } from '../../infrastructure/db/db.schema';
 import { Kysely } from 'kysely';
@@ -18,44 +17,46 @@ export class PostsRepository {
       .selectFrom('posts')
       .select((eb) => {
         return [
-        'posts.postId',
-        'posts.userId',
-        'posts.status',
-        'posts.type',
-        'posts.language',
-        'posts.createdAt',
-        'posts.title',
-        'posts.body',
-        'posts.tags',
-        jsonArrayFrom(
-          eb
-            .selectFrom('comments')
-            .select([
-              'comments.commentId',
-              'comments.postId',
-              'comments.userId',
-              'comments.createdAt',
-              'comments.path',
-              'comments.body',
-            ])
-            .whereRef('comments.postId', '=', 'posts.postId')
-        ).as('comments')
-        ]
+          'posts.postId',
+          'posts.userId',
+          'posts.status',
+          'posts.type',
+          'posts.language',
+          'posts.createdAt',
+          'posts.title',
+          'posts.body',
+          'posts.tags',
+          jsonArrayFrom(
+            eb
+              .selectFrom('comments')
+              .select([
+                'comments.commentId',
+                'comments.postId',
+                'comments.userId',
+                'comments.createdAt',
+                'comments.path',
+                'comments.body',
+              ])
+              .whereRef('comments.postId', '=', 'posts.postId'),
+          ).as('comments'),
+        ];
       })
       .where('posts.postId', '=', postId)
-      .groupBy('posts.postId')
+      .groupBy('posts.postId');
 
-      const post = await query.executeTakeFirst();
+    const post = await query.executeTakeFirst();
 
-      if (!post) return null;
+    if (!post) return null;
 
-      return new Post({
-        ...post,
-        comments: post.comments.map(comment => new Comment(comment))
-      });
+    return new Post({
+      ...post,
+      comments: post.comments.map((comment) => new Comment(comment)),
+    });
   }
 
-  async searchPosts(search: SearchPostsParams): Promise<SearchPostsResponseDto> {
+  async searchPosts(
+    search: SearchPostsParams,
+  ): Promise<SearchPostsResponseDto> {
     let query = this.db
       .selectFrom('posts')
       .select([
@@ -68,19 +69,17 @@ export class PostsRepository {
         'title',
         'body',
         'tags',
-      ])
+      ]);
 
     if (search.filter.language) {
-      query = query.where('language', '=', search.filter.language)
-    }    
+      query = query.where('language', '=', search.filter.language);
+    }
 
     if (search.postIdCursor) {
       query = query.where('postId', '>', search.postIdCursor);
     }
 
-    query = query
-      .orderBy('postId', 'desc')
-      .limit(search.limit)
+    query = query.orderBy('postId', 'desc').limit(search.limit);
 
     const rows = await query.execute();
 
@@ -107,12 +106,12 @@ export class PostsRepository {
   }
 
   async update(post: Post): Promise<void> {
-    const changes = post.changes();   
+    const changes = post.changes();
 
     await this.db
       .updateTable('posts')
       .where('posts.postId', '=', post.postId)
       .set(changes)
-      .execute()
+      .execute();
   }
 }

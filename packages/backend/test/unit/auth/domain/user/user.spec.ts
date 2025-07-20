@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { AuthConfig, User } from '../../../../../src/auth/domain/user/user';
 import { UserBuilder } from '../../../../__fixtures__/builders/user/user.builder';
 import { AuthConfigBuilder } from '../../../../__fixtures__/builders/auth/authConfig.builder';
@@ -7,7 +6,7 @@ import { getTimeInSeconds } from '../../../../shared/utils/getTimeInSeconds';
 import { makePasswordHash } from '../../../../shared/utils/makePasswordHash';
 import {
   REFRESH_TOKEN_NOT_FOUND,
-  USERNAME_OR_PASSWORD_IS_NOT_VALID
+  USERNAME_OR_PASSWORD_IS_NOT_VALID,
 } from '../../../../../src/infrastructure/shared/constants';
 import { RefreshTokenBuilder } from '../../../../__fixtures__/builders/user/refreshToken.builder';
 
@@ -84,14 +83,17 @@ describe(`${User.name}`, () => {
 
         // assert
         const tokensPayload = assertTokensAreValid();
-        expect(tokensPayload).toStrictEqual(makeExpectedPayload(user, authConfig, now));
-        expect(user.refreshTokens[user.refreshTokens.length - 1])
-          .toStrictEqual(
-            RefreshTokenBuilder.defaultPreInserted.with({
-              token: resultTokens.refreshToken,
-              expiresAt: new Date(now.getTime() + authConfig.refreshToken.expiryInSeconds * 1000)
-            }).result
-          )
+        expect(tokensPayload).toStrictEqual(
+          makeExpectedPayload(user, authConfig, now),
+        );
+        expect(user.refreshTokens[user.refreshTokens.length - 1]).toStrictEqual(
+          RefreshTokenBuilder.defaultPreInserted.with({
+            token: resultTokens.refreshToken,
+            expiresAt: new Date(
+              now.getTime() + authConfig.refreshToken.expiryInSeconds * 1000,
+            ),
+          }).result,
+        );
 
         function assertTokensAreValid() {
           const accessPayload = jwt.verify(
@@ -128,9 +130,9 @@ describe(`${User.name}`, () => {
       async ({ user, givenPassword, authConfig, now }) => {
         jest.useFakeTimers().setSystemTime(now);
 
-        await expect(
-          user.login(givenPassword, authConfig),
-        ).rejects.toThrow(USERNAME_OR_PASSWORD_IS_NOT_VALID);
+        await expect(user.login(givenPassword, authConfig)).rejects.toThrow(
+          USERNAME_OR_PASSWORD_IS_NOT_VALID,
+        );
       },
     );
   });
@@ -162,7 +164,9 @@ describe(`${User.name}`, () => {
 
     test.each(throwsTestCases)('$name', ({ user, now, token, authConfig }) => {
       jest.useFakeTimers().setSystemTime(now);
-      expect(() => user.refresh(token, authConfig)).toThrow(REFRESH_TOKEN_NOT_FOUND);
+      expect(() => user.refresh(token, authConfig)).toThrow(
+        REFRESH_TOKEN_NOT_FOUND,
+      );
     });
 
     const validTestCases = [
@@ -174,7 +178,9 @@ describe(`${User.name}`, () => {
               token: 'current-refresh',
               expiresAt: new Date(
                 new Date(2022, 0, 3).getTime() +
-                  AuthConfigBuilder.defaultAll.result.refreshToken.expiryInSeconds * 1000,
+                  AuthConfigBuilder.defaultAll.result.refreshToken
+                    .expiryInSeconds *
+                    1000,
               ),
             }).result,
           ],
@@ -199,8 +205,9 @@ describe(`${User.name}`, () => {
         authConfig.refreshToken.privateKey,
       );
 
-      expect({ accessPayload, refreshPayload })
-        .toStrictEqual(makeExpectedPayload(user, authConfig, now));
+      expect({ accessPayload, refreshPayload }).toStrictEqual(
+        makeExpectedPayload(user, authConfig, now),
+      );
 
       expect(user.refreshTokens).toHaveLength(1);
       expect(user.refreshTokens[0]).toStrictEqual(
@@ -213,4 +220,4 @@ describe(`${User.name}`, () => {
       );
     });
   });
-})
+});
