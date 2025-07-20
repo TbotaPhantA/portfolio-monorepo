@@ -6,6 +6,8 @@ import {
 } from '../../../../infrastructure/shared/constants';
 import type { User } from '../../../../auth/domain/user/user';
 
+type RawComment = NoMethods<Comment>;
+
 export class Comment {
   commentId: number;
   postId: number;
@@ -14,7 +16,7 @@ export class Comment {
   path: string;
   body: string;
 
-  constructor(raw: NoMethods<Comment>) {
+  constructor(raw: RawComment) {
     this.commentId = raw.commentId;
     this.postId = raw.postId;
     this.userId = raw.userId;
