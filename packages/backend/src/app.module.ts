@@ -13,6 +13,8 @@ import { ClsModule } from 'nestjs-cls';
     AuthModule,
     PostsModule,
     ClsModule.forRoot({
+      global: true,
+      middleware: { mount: true },
       plugins: [
         new ClsPluginTransactional({
           imports: [DBModule],

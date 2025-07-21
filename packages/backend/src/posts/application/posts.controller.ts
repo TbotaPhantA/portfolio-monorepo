@@ -1,9 +1,8 @@
-import { Body, Controller, Post, Req } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { CreatePostDto } from '../domain/dto/createPost/createPost.dto';
 import { PostResponseDto } from '../domain/dto/createPost/postResponse.dto';
 import { CreatePostsService } from './services/createPosts.service';
-import { Authentication } from '../../auth/application/decorators/authentication';
-import { UserPayload } from '../../infrastructure/shared/types/userPayload';
+import { AuthGuards } from '../../auth/application/decorators/authentication';
 import { UserRoleEnum } from '../../auth/domain/enums/userRole.enum';
 import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 import { SearchPostsParams } from '../domain/dto/search/searchPostsParamDto';
@@ -12,9 +11,10 @@ import { SearchPostsResponseDto } from '../domain/dto/search/searchPostsResponse
 import { UpdatePostResponseDto } from '../domain/dto/updatePost/updatePostResponse.dto';
 import { UpdatePostDto } from '../domain/dto/updatePost/updatePost.dto';
 import { UpdatePostsService } from './services/updatePosts.service';
+import { Roles } from '../../auth/application/decorators/roles';
 
 @ApiBearerAuth()
-@Authentication([UserRoleEnum.ADMIN])
+@AuthGuards()
 @Controller('posts')
 export class PostsController {
   constructor(
@@ -25,6 +25,7 @@ export class PostsController {
 
   @Post('/search-posts')
   @ApiResponse({ type: SearchPostsResponseDto })
+  @Roles(UserRoleEnum.ADMIN, UserRoleEnum.VISITOR)
   async searchPosts(
     @Body() dto: SearchPostsParams,
   ): Promise<SearchPostsResponseDto> {
@@ -32,21 +33,17 @@ export class PostsController {
   }
 
   @Post('/create-post')
+  @Roles(UserRoleEnum.ADMIN)
   @ApiResponse({ type: PostResponseDto })
-  async createPost(
-    @Body() dto: CreatePostDto,
-    @Req() { user }: { user: UserPayload }, // TODO: validate user payload
-  ): Promise<PostResponseDto> {
-    return await this.createService.create(dto, user);
+  async createPost(@Body() dto: CreatePostDto): Promise<PostResponseDto> {
+    return await this.createService.create(dto);
   }
 
   @Post('/update-post')
+  @Roles(UserRoleEnum.ADMIN)
   @ApiResponse({ type: UpdatePostResponseDto })
-  async updatePost(
-    @Body() dto: UpdatePostDto,
-    @Req() { user }: { user: UserPayload }, // TODO: validate user payload
-  ): Promise<UpdatePostResponseDto> {
-    return this.updateService.updateByDto(dto, user);
+  async updatePost(@Body() dto: UpdatePostDto): Promise<UpdatePostResponseDto> {
+    return this.updateService.updateByDto(dto);
   }
 
   /**

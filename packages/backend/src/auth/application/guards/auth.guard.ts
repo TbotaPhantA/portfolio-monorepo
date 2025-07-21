@@ -7,9 +7,17 @@ import {
 import { Request } from 'express';
 import { jwtVerifyAsync } from '../../../infrastructure/shared/utils/jwtVerifyAsync';
 import { config } from '../../../infrastructure/config/config';
+import { ClsService } from 'nestjs-cls';
+import { validate } from 'class-validator';
+import { UserPayload } from '../../../infrastructure/shared/types/userPayload';
+import { plainToInstance } from 'class-transformer';
+import * as assert from 'node:assert';
+import { ClsStoreMap } from '../../../infrastructure/shared/types/clsStoreMap';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
+  constructor(private readonly cls: ClsService<ClsStoreMap>) {}
+
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
 
@@ -18,11 +26,14 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException();
     }
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      request['user'] = await jwtVerifyAsync(
+      const userPayload = await jwtVerifyAsync(
         token,
         config.auth.accessToken.privateKey,
       );
+      const payloadInstance = plainToInstance(UserPayload, userPayload);
+      const validationErrors = await validate(payloadInstance);
+      assert.ok(validationErrors.length === 0);
+      this.cls.set('user', payloadInstance);
     } catch {
       throw new UnauthorizedException();
     }
