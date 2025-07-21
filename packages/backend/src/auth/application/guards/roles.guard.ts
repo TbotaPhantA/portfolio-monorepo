@@ -22,7 +22,6 @@ export class RolesGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const availableRoles =
       this.reflector.get<UserRoleEnum[]>(ROLES_KEY, context.getHandler()) || [];
-    console.log({ availableRoles })
     const user = this.cls.get('user');
     assert.ok(user, 'No user in request!');
     if (!doIntersect(user.roles, availableRoles)) {

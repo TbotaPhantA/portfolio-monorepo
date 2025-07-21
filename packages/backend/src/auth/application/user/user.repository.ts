@@ -44,7 +44,13 @@ export class UserRepository {
 
     return new User({
       ...userRow,
-      refreshTokens: userRow.refreshTokens.map((t) => new RefreshToken(t)),
+      refreshTokens: userRow.refreshTokens.map(
+        (t) =>
+          new RefreshToken({
+            ...t,
+            expiresAt: new Date(Date.parse(t.expiresAt)),
+          }),
+      ),
     });
   }
 

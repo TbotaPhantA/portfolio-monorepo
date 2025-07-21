@@ -49,7 +49,13 @@ export class PostsRepository {
 
     return new Post({
       ...post,
-      comments: post.comments.map((comment) => new Comment(comment)),
+      comments: post.comments.map(
+        (comment) =>
+          new Comment({
+            ...comment,
+            createdAt: new Date(Date.parse(comment.createdAt)),
+          }),
+      ),
     });
   }
 
