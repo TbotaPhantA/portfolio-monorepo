@@ -1,6 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { CreatePostDto } from '../domain/dto/createPost/createPost.dto';
-import { PostResponseDto } from '../domain/dto/createPost/postResponse.dto';
 import { CreatePostsService } from './services/createPosts.service';
 import { AuthGuards } from '../../auth/application/decorators/authentication';
 import { UserRoleEnum } from '../../auth/domain/enums/userRole.enum';
@@ -12,6 +11,7 @@ import { UpdatePostResponseDto } from '../domain/dto/updatePost/updatePostRespon
 import { UpdatePostDto } from '../domain/dto/updatePost/updatePost.dto';
 import { UpdatePostsService } from './services/updatePosts.service';
 import { Roles } from '../../auth/application/decorators/roles';
+import { CreatePostResponseDto } from '../domain/dto/createPost/createPostResponse.dto';
 
 @ApiBearerAuth()
 @AuthGuards()
@@ -34,8 +34,8 @@ export class PostsController {
 
   @Post('/create-post')
   @Roles(UserRoleEnum.ADMIN)
-  @ApiResponse({ type: PostResponseDto })
-  async createPost(@Body() dto: CreatePostDto): Promise<PostResponseDto> {
+  @ApiResponse({ type: CreatePostResponseDto })
+  async createPost(@Body() dto: CreatePostDto): Promise<CreatePostResponseDto> {
     return await this.createService.create(dto);
   }
 
