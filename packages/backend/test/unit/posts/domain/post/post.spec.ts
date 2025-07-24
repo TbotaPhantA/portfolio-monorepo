@@ -78,7 +78,7 @@ describe(`${Post.name}`, () => {
     test.each(testCases)(
       '%s',
       ({ dto, post, expectedPost, expectedChanges }) => {
-        const postFromDB = Post.createFromDB(post);
+        const postFromDB = new Post(post);
         postFromDB.updateByDto(dto, UserPayloadBuilder.defaultAll.result);
         expect(postFromDB).toStrictEqual(expectedPost);
         expect(postFromDB.changes()).toStrictEqual(expectedChanges);
@@ -100,7 +100,7 @@ describe(`${Post.name}`, () => {
     ];
 
     test.each(throwsTestCases)('%s', ({ dto, user, post, expectedError }) => {
-      const postFromDB = Post.createFromDB(post);
+      const postFromDB = new Post(post);
       expect(() => postFromDB.updateByDto(dto, user)).toThrow(expectedError);
     });
   });

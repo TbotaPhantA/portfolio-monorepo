@@ -46,10 +46,6 @@ export class Post {
     this.#original = _.cloneDeep(this);
   }
 
-  static createFromDB(raw: RawPost): Post {
-    return new Post(raw);
-  }
-
   static createByDto(dto: CreatePostDto, user: UserPayload): Post {
     return new Post({
       postId: PLACEHOLDER_ID,
