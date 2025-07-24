@@ -117,10 +117,13 @@ export class PostsRepository {
   async update(post: Post): Promise<void> {
     const changes = post.changes();
 
-    await this.db.tx
+    if (Object.keys(changes).length === 0) return;
+
+    const query = this.db.tx
       .updateTable('posts')
       .where('posts.postId', '=', post.postId)
-      .set(changes)
-      .execute();
+      .set(changes);
+
+    await query.execute();
   }
 }
