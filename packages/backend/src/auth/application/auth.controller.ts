@@ -2,13 +2,18 @@ import { Body, Controller, Post, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiResponse } from '@nestjs/swagger';
 import { FastifyReply } from 'fastify';
-import { LoginDto, LoginResponseDto } from '@portfolio/contracts';
+import {
+  AUTH_CONTROLLER,
+  AUTH_ROUTES,
+  LoginDto,
+  LoginResponseDto,
+} from '@portfolio/contracts';
 
-@Controller('auth')
+@Controller(AUTH_CONTROLLER)
 export class AuthController {
   constructor(private readonly auth: AuthService) {}
 
-  @Post('/login')
+  @Post(AUTH_ROUTES.LOGIN)
   @ApiResponse({ type: LoginResponseDto })
   login(
     @Body() dto: LoginDto,

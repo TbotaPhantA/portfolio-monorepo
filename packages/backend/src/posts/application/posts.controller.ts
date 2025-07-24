@@ -8,6 +8,8 @@ import { Roles } from '../../auth/application/decorators/roles';
 import {
   CreatePostDto,
   CreatePostResponseDto,
+  POSTS_CONTROLLER,
+  POSTS_ROUTES,
   SearchPostsParams,
   SearchPostsResponseDto,
   UpdatePostDto,
@@ -17,7 +19,7 @@ import {
 
 @ApiBearerAuth()
 @AuthGuards()
-@Controller('posts')
+@Controller(POSTS_CONTROLLER)
 export class PostsController {
   constructor(
     private readonly readService: ReadPostsService,
@@ -25,21 +27,21 @@ export class PostsController {
     private readonly updateService: UpdatePostsService,
   ) {}
 
-  @Post('/search-posts')
+  @Post(POSTS_ROUTES.SEARCH_POSTS)
   @ApiResponse({ type: SearchPostsResponseDto })
   @Roles(UserRoleEnum.ADMIN, UserRoleEnum.VISITOR)
   searchPosts(@Body() dto: SearchPostsParams): Promise<SearchPostsResponseDto> {
     return this.readService.searchPosts(dto);
   }
 
-  @Post('/create-post')
+  @Post(POSTS_ROUTES.CREATE_POSTS)
   @Roles(UserRoleEnum.ADMIN)
   @ApiResponse({ type: CreatePostResponseDto })
   createPost(@Body() dto: CreatePostDto): Promise<CreatePostResponseDto> {
     return this.createService.create(dto);
   }
 
-  @Post('/update-post')
+  @Post(POSTS_ROUTES.UPDATE_POSTS)
   @Roles(UserRoleEnum.ADMIN)
   @ApiResponse({ type: UpdatePostResponseDto })
   updatePost(@Body() dto: UpdatePostDto): Promise<UpdatePostResponseDto> {
