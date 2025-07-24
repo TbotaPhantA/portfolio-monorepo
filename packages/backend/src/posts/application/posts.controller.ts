@@ -26,23 +26,21 @@ export class PostsController {
   @Post('/search-posts')
   @ApiResponse({ type: SearchPostsResponseDto })
   @Roles(UserRoleEnum.ADMIN, UserRoleEnum.VISITOR)
-  async searchPosts(
-    @Body() dto: SearchPostsParams,
-  ): Promise<SearchPostsResponseDto> {
+  searchPosts(@Body() dto: SearchPostsParams): Promise<SearchPostsResponseDto> {
     return this.readService.searchPosts(dto);
   }
 
   @Post('/create-post')
   @Roles(UserRoleEnum.ADMIN)
   @ApiResponse({ type: CreatePostResponseDto })
-  async createPost(@Body() dto: CreatePostDto): Promise<CreatePostResponseDto> {
-    return await this.createService.create(dto);
+  createPost(@Body() dto: CreatePostDto): Promise<CreatePostResponseDto> {
+    return this.createService.create(dto);
   }
 
   @Post('/update-post')
   @Roles(UserRoleEnum.ADMIN)
   @ApiResponse({ type: UpdatePostResponseDto })
-  async updatePost(@Body() dto: UpdatePostDto): Promise<UpdatePostResponseDto> {
+  updatePost(@Body() dto: UpdatePostDto): Promise<UpdatePostResponseDto> {
     return this.updateService.updateByDto(dto);
   }
 

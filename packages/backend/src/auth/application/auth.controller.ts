@@ -11,7 +11,7 @@ export class AuthController {
 
   @Post('/login')
   @ApiResponse({ type: LoginResponseDto })
-  async login(
+  login(
     @Body() dto: LoginDto,
     @Res({ passthrough: true }) reply: FastifyReply,
   ): Promise<LoginResponseDto> {
