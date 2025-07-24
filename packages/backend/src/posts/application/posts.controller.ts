@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Patch, Post } from '@nestjs/common';
 import { CreatePostsService } from './services/createPosts.service';
 import { AuthGuards } from '../../auth/application/decorators/authentication';
 import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
@@ -41,7 +41,7 @@ export class PostsController {
     return this.createService.create(dto);
   }
 
-  @Post(POSTS_ROUTES.UPDATE_POSTS)
+  @Patch(POSTS_ROUTES.UPDATE_POSTS)
   @Roles(UserRoleEnum.ADMIN)
   @ApiResponse({ type: UpdatePostResponseDto })
   updatePost(@Body() dto: UpdatePostDto): Promise<UpdatePostResponseDto> {
