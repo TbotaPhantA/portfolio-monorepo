@@ -1,11 +1,10 @@
 import { ForbiddenException } from '@nestjs/common';
-import { PostStatusEnum } from '../../../../../src/posts/domain/enums/postStatus.enum';
-import { PostTypeEnum } from '../../../../../src/posts/domain/enums/postType.enum';
 import { Post } from '../../../../../src/posts/domain/post/post';
 import { CreatePostDtoBuilder } from '../../../../__fixtures__/builders/createPost/createPostDto.builder';
 import { PostBuilder } from '../../../../__fixtures__/builders/post/post.builder';
 import { UpdatePostDtoBuilder } from '../../../../__fixtures__/builders/updatePost/updatePostDto.builder';
 import { UserPayloadBuilder } from '../../../../__fixtures__/builders/user/userPayload.builder';
+import { PostStatusEnum, PostTypeEnum } from '@portfolio/contracts';
 
 describe(`${Post.name}`, () => {
   describe(`${Post.createByDto.name}`, () => {

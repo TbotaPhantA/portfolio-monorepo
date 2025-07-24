@@ -1,17 +1,19 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { CreatePostDto } from '../domain/dto/createPost/createPost.dto';
 import { CreatePostsService } from './services/createPosts.service';
 import { AuthGuards } from '../../auth/application/decorators/authentication';
-import { UserRoleEnum } from '../../auth/domain/enums/userRole.enum';
 import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
-import { SearchPostsParams } from '../domain/dto/search/searchPostsParamDto';
 import { ReadPostsService } from './services/readPosts.service';
-import { SearchPostsResponseDto } from '../domain/dto/search/searchPostsResponseDto';
-import { UpdatePostResponseDto } from '../domain/dto/updatePost/updatePostResponse.dto';
-import { UpdatePostDto } from '../domain/dto/updatePost/updatePost.dto';
 import { UpdatePostsService } from './services/updatePosts.service';
 import { Roles } from '../../auth/application/decorators/roles';
-import { CreatePostResponseDto } from '../domain/dto/createPost/createPostResponse.dto';
+import {
+  CreatePostDto,
+  CreatePostResponseDto,
+  SearchPostsParams,
+  SearchPostsResponseDto,
+  UpdatePostDto,
+  UpdatePostResponseDto,
+  UserRoleEnum,
+} from '@portfolio/contracts';
 
 @ApiBearerAuth()
 @AuthGuards()

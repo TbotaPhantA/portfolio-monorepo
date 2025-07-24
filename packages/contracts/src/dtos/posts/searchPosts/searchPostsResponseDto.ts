@@ -3,17 +3,11 @@ import { PostResponseDto } from '../createPost/postResponse.dto';
 
 export class SearchPostsResponseDto {
   @ApiProperty({ type: PostResponseDto })
-  posts: PostResponseDto[];
+  posts!: PostResponseDto[];
 
-  static from(
-    posts: Omit<PostResponseDto, 'comments'>[],
-  ): SearchPostsResponseDto {
+  static fromMany(rawPosts: PostResponseDto[]): SearchPostsResponseDto {
     const dto = new SearchPostsResponseDto();
-
-    dto.posts = posts.map((post) =>
-      PostResponseDto.from({ ...post, comments: [] }),
-    );
-
+    dto.posts = PostResponseDto.fromMany(rawPosts);
     return dto;
   }
 }

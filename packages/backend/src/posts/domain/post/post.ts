@@ -1,19 +1,21 @@
-import { PostStatusEnum } from '../enums/postStatus.enum';
-import { PostTypeEnum } from '../enums/postType.enum';
-import { LanguageEnum } from '../enums/language.enum';
 import type { NoMethods } from '../../../infrastructure/shared/types/noMethods';
 import { Comment } from './comment/comment';
-import { CreatePostDto } from '../dto/createPost/createPost.dto';
 import {
   PLACEHOLDER_DATE,
   PLACEHOLDER_ID,
 } from '../../../infrastructure/shared/constants';
-import { UserPayload } from '../../../infrastructure/shared/types/userPayload';
-import { UpdatePostDto } from '../dto/updatePost/updatePost.dto';
 import { ForbiddenException } from '@nestjs/common';
 import * as assert from 'node:assert';
 import * as _ from 'lodash';
 import { objectDiff } from '../../../infrastructure/shared/utils/objectDiff';
+import {
+  CreatePostDto,
+  LanguageEnum,
+  PostStatusEnum,
+  PostTypeEnum,
+  UpdatePostDto,
+  UserPayload,
+} from '@portfolio/contracts';
 
 type RawPost = NoMethods<Post>;
 

@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { CreatePostDto } from '../../domain/dto/createPost/createPost.dto';
 import { Post } from '../../domain/post/post';
 import { PostsRepository } from '../posts.repository';
 import { MapDbConstraintErrors } from '../decorators/mapDBConstraintErrors';
 import { ClsService } from 'nestjs-cls';
 import { ClsStoreMap } from '../../../infrastructure/shared/types/clsStoreMap';
-import { CreatePostResponseDto } from '../../domain/dto/createPost/createPostResponse.dto';
+import { CreatePostDto, CreatePostResponseDto } from '@portfolio/contracts';
 
 @Injectable()
 export class CreatePostsService {

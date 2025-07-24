@@ -9,8 +9,8 @@ import { doIntersect } from '../../../infrastructure/shared/utils/doIntersect';
 import { ClsService } from 'nestjs-cls';
 import { ClsStoreMap } from '../../../infrastructure/shared/types/clsStoreMap';
 import { Reflector } from '@nestjs/core';
-import { UserRoleEnum } from '../../domain/enums/userRole.enum';
 import { ROLES_KEY } from '../decorators/roles';
+import { UserRoleEnum } from '@portfolio/contracts';
 
 @Injectable()
 export class RolesGuard implements CanActivate {

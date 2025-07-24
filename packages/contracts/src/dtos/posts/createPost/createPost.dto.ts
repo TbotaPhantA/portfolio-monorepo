@@ -1,38 +1,36 @@
-import { PostStatusEnum } from '../../enums/postStatus.enum';
-import { PostTypeEnum } from '../../enums/postType.enum';
-import { LanguageEnum } from '../../enums/language.enum';
 import { IsArray, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { LanguageEnum, PostStatusEnum, PostTypeEnum } from '../../../enums';
 
 export class CreatePostDto {
   @IsNotEmpty()
   @IsEnum(PostStatusEnum)
   @ApiProperty({ example: PostStatusEnum.DRAFT })
-  status: PostStatusEnum;
+  status!: PostStatusEnum;
 
   @IsNotEmpty()
   @IsEnum(PostTypeEnum)
   @ApiProperty({ example: PostTypeEnum.ARTICLE })
-  type: PostTypeEnum;
+  type!: PostTypeEnum;
 
   @IsNotEmpty()
   @IsEnum(LanguageEnum)
   @ApiProperty({ example: LanguageEnum.EN })
-  language: LanguageEnum;
+  language!: LanguageEnum;
 
   @IsNotEmpty()
   @IsString()
   @ApiProperty({ example: 'test title' })
-  title: string;
+  title!: string;
 
   @IsNotEmpty()
   @IsString()
   @ApiProperty({ example: 'test body' })
-  body: string;
+  body!: string;
 
   @IsNotEmpty()
   @IsArray()
   @IsString({ each: true })
   @ApiProperty({ example: ['test tag'] })
-  tags: string[];
+  tags!: string[];
 }

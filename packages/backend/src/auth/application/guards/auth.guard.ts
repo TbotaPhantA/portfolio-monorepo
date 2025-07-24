@@ -9,10 +9,10 @@ import { jwtVerifyAsync } from '../../../infrastructure/shared/utils/jwtVerifyAs
 import { config } from '../../../infrastructure/config/config';
 import { ClsService } from 'nestjs-cls';
 import { validate } from 'class-validator';
-import { UserPayload } from '../../../infrastructure/shared/types/userPayload';
 import { plainToInstance } from 'class-transformer';
 import * as assert from 'node:assert';
 import { ClsStoreMap } from '../../../infrastructure/shared/types/clsStoreMap';
+import { UserPayload } from '@portfolio/contracts';
 
 @Injectable()
 export class AuthGuard implements CanActivate {

@@ -9,5 +9,5 @@ export class SearchPostsParams extends PostPaginationDto {
   @ValidateNested()
   @Type(() => PostFilterDto)
   @ApiProperty({ type: PostFilterDto })
-  filter: PostFilterDto;
+  filter!: PostFilterDto;
 }

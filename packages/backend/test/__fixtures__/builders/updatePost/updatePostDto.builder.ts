@@ -1,7 +1,9 @@
 import { InjectionBuilder } from 'ts-fixture-builder';
-import { UpdatePostDto } from '../../../../src/posts/domain/dto/updatePost/updatePost.dto';
-import { PostStatusEnum } from '../../../../src/posts/domain/enums/postStatus.enum';
-import { PostTypeEnum } from '../../../../src/posts/domain/enums/postType.enum';
+import {
+  PostStatusEnum,
+  PostTypeEnum,
+  UpdatePostDto,
+} from '@portfolio/contracts';
 
 export class UpdatePostDtoBuilder {
   static get defaultAll(): InjectionBuilder<UpdatePostDto> {

@@ -1,6 +1,5 @@
 import { InjectionBuilder } from 'ts-fixture-builder';
-import { UserPayload } from '../../../../src/infrastructure/shared/types/userPayload';
-import { UserRoleEnum } from '../../../../src/auth/domain/enums/userRole.enum';
+import { UserPayload, UserRoleEnum } from '@portfolio/contracts';
 
 export class UserPayloadBuilder {
   static get defaultAll(): InjectionBuilder<UserPayload> {

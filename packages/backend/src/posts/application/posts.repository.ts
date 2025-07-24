@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { Post } from '../domain/post/post';
-import { SearchPostsParams } from '../domain/dto/search/searchPostsParamDto';
-import { SearchPostsResponseDto } from '../domain/dto/search/searchPostsResponseDto';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { Comment } from '../domain/post/comment/comment';
 import { KyselyCLS } from '../../infrastructure/shared/types/kyselyCLS';
 import { TransactionHost } from '@nestjs-cls/transactional';
+import {
+  SearchPostsParams,
+  SearchPostsResponseDto,
+} from '@portfolio/contracts';
 
 @Injectable()
 export class PostsRepository {
@@ -88,7 +90,9 @@ export class PostsRepository {
 
     const rows = await query.execute();
 
-    return SearchPostsResponseDto.from(rows);
+    return SearchPostsResponseDto.fromMany(
+      rows.map((row) => ({ ...row, comments: [] })),
+    );
   }
 
   async insertAndFillInPost(post: Post): Promise<void> {

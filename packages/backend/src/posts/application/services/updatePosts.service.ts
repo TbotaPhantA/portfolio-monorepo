@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { UpdatePostResponseDto } from '../../domain/dto/updatePost/updatePostResponse.dto';
 import { PostsRepository } from '../posts.repository';
-import { UpdatePostDto } from '../../domain/dto/updatePost/updatePost.dto';
 import { MapDbConstraintErrors } from '../decorators/mapDBConstraintErrors';
 import { ReadPostsService } from './readPosts.service';
 import { Propagation, Transactional } from '@nestjs-cls/transactional';
 import { KyselyCLS } from '../../../infrastructure/shared/types/kyselyCLS';
 import { ClsService } from 'nestjs-cls';
 import { ClsStoreMap } from '../../../infrastructure/shared/types/clsStoreMap';
+import { UpdatePostDto, UpdatePostResponseDto } from '@portfolio/contracts';
 
 @Injectable()
 export class UpdatePostsService {

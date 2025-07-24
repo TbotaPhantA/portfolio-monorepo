@@ -1,9 +1,8 @@
 import { Body, Controller, Post, Res } from '@nestjs/common';
-import { LoginDto } from '../domain/dto/login.dto';
-import { LoginResponseDto } from '../domain/dto/loginResponse.dto';
 import { AuthService } from './auth.service';
 import { ApiResponse } from '@nestjs/swagger';
 import { FastifyReply } from 'fastify';
+import { LoginDto, LoginResponseDto } from '@portfolio/contracts';
 
 @Controller('auth')
 export class AuthController {

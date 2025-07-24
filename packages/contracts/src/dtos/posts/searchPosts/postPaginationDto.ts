@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsInt, IsNotEmpty, IsOptional, Max, Min } from 'class-validator';
-import { MAX_INT_4 } from '../../../../infrastructure/shared/constants';
+import { MAX_INT_4 } from '../../../shared/constants';
 
 export class PostPaginationDto {
   @IsNotEmpty()
@@ -8,7 +8,7 @@ export class PostPaginationDto {
   @Min(1)
   @Max(100)
   @ApiProperty({ example: 10 })
-  limit: number;
+  limit!: number;
 
   @IsOptional()
   @IsInt()

@@ -1,6 +1,6 @@
 import { IsEnum, IsOptional } from 'class-validator';
-import { LanguageEnum } from '../../enums/language.enum';
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { LanguageEnum } from '../../../enums';
 
 export class PostFilterDto {
   @IsOptional()

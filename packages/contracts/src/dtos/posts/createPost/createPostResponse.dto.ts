@@ -1,14 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Post } from '../../post/post';
 import { PostResponseDto } from './postResponse.dto';
 
 export class CreatePostResponseDto {
   @ApiProperty()
-  post: PostResponseDto;
+  post!: PostResponseDto;
 
-  static from(post: Post) {
+  static from(rawPost: PostResponseDto): CreatePostResponseDto {
     const dto = new CreatePostResponseDto();
-    dto.post = PostResponseDto.from(post);
+    dto.post = PostResponseDto.from(rawPost);
     return dto;
   }
 }

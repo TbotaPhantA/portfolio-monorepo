@@ -1,9 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PostsRepository } from '../posts.repository';
-import { SearchPostsParams } from '../../domain/dto/search/searchPostsParamDto';
-import { SearchPostsResponseDto } from '../../domain/dto/search/searchPostsResponseDto';
 import { Post } from '../../domain/post/post';
 import { POST_NOT_FOUND } from '../../../infrastructure/shared/constants';
+import {
+  SearchPostsParams,
+  SearchPostsResponseDto,
+} from '@portfolio/contracts';
 
 @Injectable()
 export class ReadPostsService {

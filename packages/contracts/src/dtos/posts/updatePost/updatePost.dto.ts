@@ -8,9 +8,8 @@ import {
   Max,
   Min,
 } from 'class-validator';
-import { PostStatusEnum } from '../../enums/postStatus.enum';
-import { PostTypeEnum } from '../../enums/postType.enum';
-import { MAX_INT_4 } from '../../../../infrastructure/shared/constants';
+import { MAX_INT_4 } from '../../../shared/constants';
+import { PostStatusEnum, PostTypeEnum } from '../../../enums';
 
 export class UpdatePostDto {
   @IsNotEmpty()
@@ -18,31 +17,31 @@ export class UpdatePostDto {
   @Min(1)
   @Max(MAX_INT_4)
   @ApiProperty({ example: 1 })
-  postId: number;
+  postId!: number;
 
   @IsNotEmpty()
   @IsEnum(PostStatusEnum)
   @ApiProperty({ example: PostStatusEnum.DRAFT })
-  status: PostStatusEnum;
+  status!: PostStatusEnum;
 
   @IsNotEmpty()
   @IsEnum(PostTypeEnum)
   @ApiProperty({ example: PostTypeEnum.ARTICLE })
-  type: PostTypeEnum;
+  type!: PostTypeEnum;
 
   @IsNotEmpty()
   @IsString()
   @ApiProperty({ example: 'test title' })
-  title: string;
+  title!: string;
 
   @IsNotEmpty()
   @IsString()
   @ApiProperty({ example: 'test body' })
-  body: string;
+  body!: string;
 
   @IsNotEmpty()
   @IsArray()
   @IsString({ each: true })
   @ApiProperty({ example: ['test tag'] })
-  tags: string[];
+  tags!: string[];
 }

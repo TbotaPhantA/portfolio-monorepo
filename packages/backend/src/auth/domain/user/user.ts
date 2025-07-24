@@ -1,4 +1,3 @@
-import { UserRoleEnum } from '../enums/userRole.enum';
 import { NoMethods } from '../../../infrastructure/shared/types/noMethods';
 import { RefreshToken } from './refreshToken/refreshToken';
 import type { config } from '../../../infrastructure/config/config';
@@ -10,7 +9,7 @@ import {
   USERNAME_OR_PASSWORD_IS_NOT_VALID,
 } from '../../../infrastructure/shared/constants';
 import * as jwt from 'jsonwebtoken';
-import { UserPayload } from '../../../infrastructure/shared/types/userPayload';
+import { UserPayload, UserRoleEnum } from '@portfolio/contracts';
 
 export type AuthConfig = (typeof config)['auth'];
 export type TokenPair = { accessToken: string; refreshToken: string };

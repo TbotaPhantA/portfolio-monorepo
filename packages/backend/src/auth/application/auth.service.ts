@@ -1,11 +1,10 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserRepository } from './user/user.repository';
-import { LoginDto } from '../domain/dto/login.dto';
-import { LoginResponseDto } from '../domain/dto/loginResponse.dto';
 import { USERNAME_OR_PASSWORD_IS_NOT_VALID } from '../../infrastructure/shared/constants';
 import { User } from '../domain/user/user';
 import { config } from '../../infrastructure/config/config';
 import { FastifyReply } from 'fastify';
+import { LoginDto, LoginResponseDto } from '@portfolio/contracts';
 
 @Injectable()
 export class AuthService {
@@ -19,7 +18,7 @@ export class AuthService {
     );
     await this.repo.insertRefreshTokens(user.refreshTokens.slice(-1));
     this.addRefreshTokenToCookies(refreshToken, reply);
-    return LoginResponseDto.from(accessToken);
+    return LoginResponseDto.from({ accessToken });
   }
 
   private async getByUsername(username: string): Promise<User> {

@@ -1,12 +1,14 @@
 import { InjectionBuilder } from 'ts-fixture-builder';
 import { Post } from '../../../../src/posts/domain/post/post';
-import { PostStatusEnum } from '../../../../src/posts/domain/enums/postStatus.enum';
-import { PostTypeEnum } from '../../../../src/posts/domain/enums/postType.enum';
-import { LanguageEnum } from '../../../../src/posts/domain/enums/language.enum';
 import {
   PLACEHOLDER_DATE,
   PLACEHOLDER_ID,
 } from '../../../../src/infrastructure/shared/constants';
+import {
+  LanguageEnum,
+  PostStatusEnum,
+  PostTypeEnum,
+} from '@portfolio/contracts';
 
 export class PostBuilder {
   static get defaultPreInserted(): InjectionBuilder<Post> {

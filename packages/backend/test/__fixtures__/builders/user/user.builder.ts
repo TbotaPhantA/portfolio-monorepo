@@ -1,9 +1,9 @@
 import { InjectionBuilder } from 'ts-fixture-builder';
 import { User } from '../../../../src/auth/domain/user/user';
-import { UserRoleEnum } from '../../../../src/auth/domain/enums/userRole.enum';
 import { makePasswordHash } from '../../../shared/utils/makePasswordHash';
 import { AuthConfigBuilder } from '../auth/authConfig.builder';
 import { makeSalt } from '../../../shared/utils/makeSalt';
+import { UserRoleEnum } from '@portfolio/contracts';
 
 export class UserBuilder {
   static get defaultAll(): InjectionBuilder<User> {

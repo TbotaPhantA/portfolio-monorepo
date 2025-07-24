@@ -1,0 +1,1 @@
+export const MAX_INT_4 = 2147483648;
