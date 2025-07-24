@@ -3,8 +3,10 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
+    "lint": "turbo run lint --filter=backend",      
+    "test": "turbo run test --filter=backend",      
+    "pipe": "turbo run pipe",
     "dev": "turbo run dev",
-    "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types"
   },
