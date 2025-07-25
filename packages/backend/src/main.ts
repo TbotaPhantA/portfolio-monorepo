@@ -10,8 +10,12 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import fastifyCookie, { FastifyCookieOptions } from '@fastify/cookie';
 import { ValidationPipe } from '@nestjs/common';
+import { otelSDK } from './infrastructure/otel/instrumentation';
 
 async function bootstrap() {
+  otelSDK.start();
+  console.log('Started OTEL SDK');
+
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter({ logger: true }),

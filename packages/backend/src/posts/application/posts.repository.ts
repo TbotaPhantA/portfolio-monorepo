@@ -8,11 +8,13 @@ import {
   SearchPostsParams,
   SearchPostsResponseDto,
 } from '@portfolio/contracts';
+import { Span } from 'nestjs-otel';
 
 @Injectable()
 export class PostsRepository {
   constructor(private readonly db: TransactionHost<KyselyCLS>) {}
 
+  @Span()
   async findOneById(postId: number): Promise<Post | null> {
     const query = this.db.tx
       .selectFrom('posts')
@@ -61,6 +63,7 @@ export class PostsRepository {
     });
   }
 
+  @Span()
   async searchPosts(
     search: SearchPostsParams,
   ): Promise<SearchPostsResponseDto> {
@@ -95,6 +98,7 @@ export class PostsRepository {
     );
   }
 
+  @Span()
   async insertAndFillInPost(post: Post): Promise<void> {
     const result = await this.db.tx
       .insertInto('posts')
@@ -114,6 +118,7 @@ export class PostsRepository {
     post.createdAt = result.createdAt;
   }
 
+  @Span()
   async update(post: Post): Promise<void> {
     const changes = post.changes();
 

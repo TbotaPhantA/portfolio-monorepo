@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   portfolio-db:
     image: postgres:alpine
@@ -19,6 +17,82 @@ services:
       interval: 10s
       timeout: 30s
       retries: 5
+
+  grafana:
+    image: grafana/grafana:12.0.0
+    volumes:
+      - ./configs/grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ./configs/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ./configs/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ./configs/grafana/dashboards:/var/lib/grafana/dashboards
+    environment:
+      OTEL_RESOURCE_ATTRIBUTES: "service.name=grafana"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mimir
+      - tempo
+      - loki
+      - opentelemetry-collector
+      - pyroscope
+
+  tempo:
+    image: grafana/tempo:2.7.2
+    command: [ "-config.file=/etc/tempo.yaml" ]
+    ports:
+      - "3200:3200"
+    volumes:
+      - "./configs/tempo/tempo.yaml:/etc/tempo.yaml"
+
+  loki:
+    image: grafana/loki:3.4.3
+    command: ["--pattern-ingester.enabled=true", "-config.file=/etc/loki/loki.yaml"]
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./configs/loki/loki.yaml:/etc/loki/loki.yaml
+
+  promtail:
+    image: grafana/promtail:2.9.12
+    volumes:
+      - ./configs/promtail/promtail-config.yaml:/etc/promtail/config.yaml:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: -config.file=/etc/promtail/config.yaml
+    depends_on:
+      - loki
+
+  mimir:
+    image: grafana/mimir:2.16.0
+    command: ["-ingester.native-histograms-ingestion-enabled=true", "-config.file=/etc/mimir.yaml"]
+    ports:
+      - "9009:9009"
+    volumes:
+      - "./configs/mimir/mimir.yaml:/etc/mimir.yaml"
+
+  pyroscope:
+    image: grafana/pyroscope:1.13.1
+    ports:
+      - "4040:4040"
+    command: ["server"]
+
+  opentelemetry-collector:
+    image: otel/opentelemetry-collector-contrib:0.126.0
+    command: [ "--config=/etc/otel-collector.yaml" ]
+    volumes:
+      - ./configs/opentelemetry-collector/otel-collector.yaml:/etc/otel-collector.yaml
+    ports:
+      - "1888:1888"   # pprof extension
+      - "8888:8888"   # Prometheus metrics exposed by the collector
+      - "8889:8889"   # Prometheus exporter metrics
+      - "13133:13133" # health_check extension
+      - "4317:4317"   # OTLP gRPC receiver
+      - "4318:4318"   # OTLP HTTP receiver
+      - "55679:55679" # zpages extension
+    depends_on:
+      - tempo
+      - mimir
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
 volumes:
   db_data:

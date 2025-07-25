@@ -5,11 +5,13 @@ import { User } from '../domain/user/user';
 import { config } from '../../infrastructure/config/config';
 import { FastifyReply } from 'fastify';
 import { LoginDto, LoginResponseDto } from '@portfolio/contracts';
+import { Span } from 'nestjs-otel';
 
 @Injectable()
 export class AuthService {
   constructor(private readonly repo: UserRepository) {}
 
+  @Span()
   async login(dto: LoginDto, reply: FastifyReply): Promise<LoginResponseDto> {
     const user = await this.getByUsername(dto.username);
     const { accessToken, refreshToken } = await user.login(

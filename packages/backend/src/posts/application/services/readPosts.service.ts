@@ -6,11 +6,13 @@ import {
   SearchPostsParams,
   SearchPostsResponseDto,
 } from '@portfolio/contracts';
+import { Span } from 'nestjs-otel';
 
 @Injectable()
 export class ReadPostsService {
   constructor(private readonly repo: PostsRepository) {}
 
+  @Span()
   searchPosts(dto: SearchPostsParams): Promise<SearchPostsResponseDto> {
     return this.repo.searchPosts(dto);
   }

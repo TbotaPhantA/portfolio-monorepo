@@ -7,6 +7,7 @@ import { KyselyCLS } from '../../../infrastructure/shared/types/kyselyCLS';
 import { ClsService } from 'nestjs-cls';
 import { ClsStoreMap } from '../../../infrastructure/shared/types/clsStoreMap';
 import { UpdatePostDto, UpdatePostResponseDto } from '@portfolio/contracts';
+import { Span } from 'nestjs-otel';
 
 @Injectable()
 export class UpdatePostsService {
@@ -16,6 +17,7 @@ export class UpdatePostsService {
     private readonly cls: ClsService<ClsStoreMap>,
   ) {}
 
+  @Span()
   @Transactional<KyselyCLS>(Propagation.Required, {
     isolationLevel: 'read committed',
   })

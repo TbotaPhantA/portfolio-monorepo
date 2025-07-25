@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
 // pg-constraint.decorator.ts
 import { BadRequestException } from '@nestjs/common';
 import 'reflect-metadata';

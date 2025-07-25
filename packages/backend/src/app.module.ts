@@ -6,9 +6,20 @@ import { ClsPluginTransactional } from '@nestjs-cls/transactional';
 import { TransactionalAdapterKysely } from '@nestjs-cls/transactional-adapter-kysely';
 import { KYSELY_MODULE_CONNECTION_TOKEN } from 'nestjs-kysely';
 import { ClsModule } from 'nestjs-cls';
+import { OpenTelemetryModule } from 'nestjs-otel';
+import { OtelConfigService } from './infrastructure/otel/opentelemetry.factory';
+import { ConfigModule } from '@nestjs/config';
+
+const OpenTelemetryModuleConfig = OpenTelemetryModule.forRootAsync({
+  useClass: OtelConfigService,
+});
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    OpenTelemetryModuleConfig,
     DBModule,
     AuthModule,
     PostsModule,

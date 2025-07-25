@@ -5,6 +5,7 @@ import { MapDbConstraintErrors } from '../decorators/mapDBConstraintErrors';
 import { ClsService } from 'nestjs-cls';
 import { ClsStoreMap } from '../../../infrastructure/shared/types/clsStoreMap';
 import { CreatePostDto, CreatePostResponseDto } from '@portfolio/contracts';
+import { Span } from 'nestjs-otel';
 
 @Injectable()
 export class CreatePostsService {
@@ -13,6 +14,7 @@ export class CreatePostsService {
     private readonly cls: ClsService<ClsStoreMap>,
   ) {}
 
+  @Span()
   @MapDbConstraintErrors()
   async create(dto: CreatePostDto): Promise<CreatePostResponseDto> {
     const post = Post.createByDto(dto, this.cls.get('user'));

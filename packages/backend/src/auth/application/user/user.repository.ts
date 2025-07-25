@@ -6,11 +6,13 @@ import { RefreshToken } from '../../domain/user/refreshToken/refreshToken';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { KyselyCLS } from '../../../infrastructure/shared/types/kyselyCLS';
+import { Span } from 'nestjs-otel';
 
 @Injectable()
 export class UserRepository {
   constructor(private readonly db: TransactionHost<KyselyCLS>) {}
 
+  @Span()
   async findByUsername(username: string): Promise<User | null> {
     const query = this.db.tx
       .selectFrom('users')
@@ -54,6 +56,7 @@ export class UserRepository {
     });
   }
 
+  @Span()
   async insertRefreshTokens(refreshTokens: RefreshToken[]): Promise<void> {
     await this.db.tx
       .insertInto('refreshTokens')
