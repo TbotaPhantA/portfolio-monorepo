@@ -3,11 +3,11 @@ import { PostsRepository } from '../posts.repository';
 import { MapDbConstraintErrors } from '../decorators/mapDBConstraintErrors';
 import { ReadPostsService } from './readPosts.service';
 import { Propagation, Transactional } from '@nestjs-cls/transactional';
-import { KyselyCLS } from '../../../infrastructure/shared/types/kyselyCLS';
 import { ClsService } from 'nestjs-cls';
-import { ClsStoreMap } from '../../../infrastructure/shared/types/clsStoreMap';
 import { UpdatePostDto, UpdatePostResponseDto } from '@portfolio/contracts';
 import { Span } from 'nestjs-otel';
+import { ClsStoreMap } from '../../../../infrastructure/shared/types/clsStoreMap';
+import { KyselyCLS } from '../../../../infrastructure/shared/types/kyselyCLS';
 
 @Injectable()
 export class UpdatePostsService {

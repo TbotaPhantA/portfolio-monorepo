@@ -1,5 +1,4 @@
 import { InjectionBuilder } from 'ts-fixture-builder';
-import { Post } from '../../../../src/posts/domain/post/post';
 import {
   PLACEHOLDER_DATE,
   PLACEHOLDER_ID,
@@ -9,6 +8,7 @@ import {
   PostStatusEnum,
   PostTypeEnum,
 } from '@portfolio/contracts';
+import { Post } from '../../../../src/modules/posts/domain/post/post';
 
 export class PostBuilder {
   static get defaultPreInserted(): InjectionBuilder<Post> {

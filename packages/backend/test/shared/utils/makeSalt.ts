@@ -1,4 +1,4 @@
-import { AuthConfig } from '../../../src/auth/domain/user/user';
+import { AuthConfig } from '../../../src/modules/auth/domain/user/user';
 
 export const makeSalt = (
   salt: string,

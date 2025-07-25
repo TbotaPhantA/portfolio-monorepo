@@ -1,4 +1,4 @@
-import { NoMethods } from '../../../../infrastructure/shared/types/noMethods';
+import { NoMethods } from '../../../../../infrastructure/shared/types/noMethods';
 
 type RawComment = NoMethods<Comment>;
 

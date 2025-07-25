@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AuthModule } from './auth/application/auth.module';
-import { PostsModule } from './posts/application/posts.module';
 import { DBModule } from './infrastructure/db/db.module';
 import { ClsPluginTransactional } from '@nestjs-cls/transactional';
 import { TransactionalAdapterKysely } from '@nestjs-cls/transactional-adapter-kysely';
@@ -10,6 +8,8 @@ import { OpenTelemetryModule } from 'nestjs-otel';
 import { OtelConfigService } from './infrastructure/otel/opentelemetry.factory';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerModule } from './infrastructure/logger/logger.module';
+import { AuthModule } from './modules/auth/application/auth.module';
+import { PostsModule } from './modules/posts/application/posts.module';
 
 const OpenTelemetryModuleConfig = OpenTelemetryModule.forRootAsync({
   useClass: OtelConfigService,

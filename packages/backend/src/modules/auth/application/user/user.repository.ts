@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { UserRoleEnum } from '../../../infrastructure/db/db.schema';
 import { sql } from 'kysely';
 import { User } from '../../domain/user/user';
 import { RefreshToken } from '../../domain/user/refreshToken/refreshToken';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { TransactionHost } from '@nestjs-cls/transactional';
-import { KyselyCLS } from '../../../infrastructure/shared/types/kyselyCLS';
 import { Span } from 'nestjs-otel';
+import { UserRoleEnum } from '@portfolio/contracts';
+import { KyselyCLS } from '../../../../infrastructure/shared/types/kyselyCLS';
 
 @Injectable()
 export class UserRepository {

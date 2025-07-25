@@ -1,11 +1,11 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserRepository } from './user/user.repository';
-import { USERNAME_OR_PASSWORD_IS_NOT_VALID } from '../../infrastructure/shared/constants';
 import { User } from '../domain/user/user';
-import { config } from '../../infrastructure/config/config';
 import { FastifyReply } from 'fastify';
 import { LoginDto, LoginResponseDto } from '@portfolio/contracts';
 import { Span } from 'nestjs-otel';
+import { config } from '../../../infrastructure/config/config';
+import { USERNAME_OR_PASSWORD_IS_NOT_VALID } from '../../../infrastructure/shared/constants';
 
 @Injectable()
 export class AuthService {

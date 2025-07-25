@@ -5,12 +5,12 @@ import {
   Injectable,
 } from '@nestjs/common';
 import * as assert from 'node:assert';
-import { doIntersect } from '../../../infrastructure/shared/utils/doIntersect';
 import { ClsService } from 'nestjs-cls';
-import { ClsStoreMap } from '../../../infrastructure/shared/types/clsStoreMap';
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from '../decorators/roles';
 import { UserRoleEnum } from '@portfolio/contracts';
+import { ClsStoreMap } from '../../../../infrastructure/shared/types/clsStoreMap';
+import { doIntersect } from '../../../../infrastructure/shared/utils/doIntersect';
 
 @Injectable()
 export class RolesGuard implements CanActivate {

@@ -1,5 +1,5 @@
-import { AuthConfig } from '../../../src/auth/domain/user/user';
 import { scryptSync } from 'crypto';
+import { AuthConfig } from '../../../src/modules/auth/domain/user/user';
 
 export const makePasswordHash = (
   password: string,

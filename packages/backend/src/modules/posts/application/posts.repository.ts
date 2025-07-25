@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { Post } from '../domain/post/post';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { Comment } from '../domain/post/comment/comment';
-import { KyselyCLS } from '../../infrastructure/shared/types/kyselyCLS';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import {
   SearchPostsParams,
   SearchPostsResponseDto,
 } from '@portfolio/contracts';
 import { Span } from 'nestjs-otel';
+import { KyselyCLS } from '../../../infrastructure/shared/types/kyselyCLS';
 
 @Injectable()
 export class PostsRepository {

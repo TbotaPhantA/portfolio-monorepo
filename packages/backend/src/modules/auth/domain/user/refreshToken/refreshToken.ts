@@ -1,8 +1,8 @@
 import * as assert from 'node:assert';
-import { PLACEHOLDER_ID } from '../../../../infrastructure/shared/constants';
-import { NoMethods } from '../../../../infrastructure/shared/types/noMethods';
 import * as jwt from 'jsonwebtoken';
 import { inspect } from 'node:util';
+import { NoMethods } from '../../../../../infrastructure/shared/types/noMethods';
+import { PLACEHOLDER_ID } from '../../../../../infrastructure/shared/constants';
 
 export class RefreshToken {
   refreshTokenId: number;

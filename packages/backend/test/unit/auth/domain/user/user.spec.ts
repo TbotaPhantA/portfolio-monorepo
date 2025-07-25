@@ -1,4 +1,3 @@
-import { AuthConfig, User } from '../../../../../src/auth/domain/user/user';
 import { UserBuilder } from '../../../../__fixtures__/builders/user/user.builder';
 import { AuthConfigBuilder } from '../../../../__fixtures__/builders/auth/authConfig.builder';
 import * as jwt from 'jsonwebtoken';
@@ -9,6 +8,10 @@ import {
   USERNAME_OR_PASSWORD_IS_NOT_VALID,
 } from '../../../../../src/infrastructure/shared/constants';
 import { RefreshTokenBuilder } from '../../../../__fixtures__/builders/user/refreshToken.builder';
+import {
+  AuthConfig,
+  User,
+} from '../../../../../src/modules/auth/domain/user/user';
 
 const makeExpectedPayload = (
   userProps: User,

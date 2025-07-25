@@ -3,7 +3,7 @@
 // pg-constraint.decorator.ts
 import { BadRequestException } from '@nestjs/common';
 import 'reflect-metadata';
-import { POST_LANGUAGE_AND_TITLE_MUST_BE_UNIQUE } from '../../../infrastructure/shared/constants';
+import { POST_LANGUAGE_AND_TITLE_MUST_BE_UNIQUE } from '../../../../infrastructure/shared/constants';
 
 const constraintToErrorMessageMap = new Map([
   ['posts_language_title_unique', POST_LANGUAGE_AND_TITLE_MUST_BE_UNIQUE],

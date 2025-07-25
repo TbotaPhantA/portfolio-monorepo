@@ -1,15 +1,15 @@
-import { NoMethods } from '../../../infrastructure/shared/types/noMethods';
 import { RefreshToken } from './refreshToken/refreshToken';
-import type { config } from '../../../infrastructure/config/config';
-import { scrypt } from '../../../infrastructure/shared/utils/scrypt';
 import * as crypto from 'crypto';
 import { UnauthorizedException } from '@nestjs/common';
+import * as jwt from 'jsonwebtoken';
+import { UserPayload, UserRoleEnum } from '@portfolio/contracts';
+import { config } from '../../../../infrastructure/config/config';
+import { NoMethods } from '../../../../infrastructure/shared/types/noMethods';
 import {
   REFRESH_TOKEN_NOT_FOUND,
   USERNAME_OR_PASSWORD_IS_NOT_VALID,
-} from '../../../infrastructure/shared/constants';
-import * as jwt from 'jsonwebtoken';
-import { UserPayload, UserRoleEnum } from '@portfolio/contracts';
+} from '../../../../infrastructure/shared/constants';
+import { scrypt } from '../../../../infrastructure/shared/utils/scrypt';
 
 export type AuthConfig = (typeof config)['auth'];
 export type TokenPair = { accessToken: string; refreshToken: string };

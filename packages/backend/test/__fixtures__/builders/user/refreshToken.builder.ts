@@ -1,6 +1,6 @@
 import { InjectionBuilder } from 'ts-fixture-builder';
-import { RefreshToken } from '../../../../src/auth/domain/user/refreshToken/refreshToken';
 import { PLACEHOLDER_ID } from '../../../../src/infrastructure/shared/constants';
+import { RefreshToken } from '../../../../src/modules/auth/domain/user/refreshToken/refreshToken';
 
 export class RefreshTokenBuilder {
   static get defaultAll(): InjectionBuilder<RefreshToken> {
