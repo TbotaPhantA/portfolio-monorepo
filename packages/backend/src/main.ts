@@ -11,6 +11,7 @@ import * as cookieParser from 'cookie-parser';
 import fastifyCookie, { FastifyCookieOptions } from '@fastify/cookie';
 import { ValidationPipe } from '@nestjs/common';
 import { otelSDK } from './infrastructure/otel/instrumentation';
+import { Logger } from 'nestjs-pino';
 
 async function bootstrap() {
   otelSDK.start();
@@ -18,9 +19,10 @@ async function bootstrap() {
 
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new FastifyAdapter({ logger: true }),
+    new FastifyAdapter(),
   );
 
+  app.useLogger(app.get(Logger));
   app.use(cookieParser());
 
   await app.register<FastifyCookieOptions>(fastifyCookie, {

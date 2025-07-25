@@ -9,6 +9,7 @@ import { ClsModule } from 'nestjs-cls';
 import { OpenTelemetryModule } from 'nestjs-otel';
 import { OtelConfigService } from './infrastructure/otel/opentelemetry.factory';
 import { ConfigModule } from '@nestjs/config';
+import { LoggerModule } from './infrastructure/logger/logger.module';
 
 const OpenTelemetryModuleConfig = OpenTelemetryModule.forRootAsync({
   useClass: OtelConfigService,
@@ -16,13 +17,9 @@ const OpenTelemetryModuleConfig = OpenTelemetryModule.forRootAsync({
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
+    ConfigModule.forRoot({ isGlobal: true }),
     OpenTelemetryModuleConfig,
-    DBModule,
-    AuthModule,
-    PostsModule,
+    LoggerModule,
     ClsModule.forRoot({
       global: true,
       middleware: { mount: true },
@@ -35,6 +32,9 @@ const OpenTelemetryModuleConfig = OpenTelemetryModule.forRootAsync({
         }),
       ],
     }),
+    DBModule,
+    AuthModule,
+    PostsModule,
   ],
   controllers: [],
   providers: [],

@@ -64,7 +64,9 @@
     "nestjs-cls": "^6.0.1",
     "nestjs-kysely": "^3.0.0",
     "nestjs-otel": "^7.0.0",
+    "nestjs-pino": "^4.4.0",
     "pg": "^8.16.3",
+    "pino": "^9.7.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
     "ts-fixture-builder": "^0.0.3"
