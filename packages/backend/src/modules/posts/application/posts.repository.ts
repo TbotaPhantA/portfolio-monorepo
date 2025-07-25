@@ -7,12 +7,15 @@ import {
   SearchPostsParams,
   SearchPostsResponseDto,
 } from '@portfolio/contracts';
-import { Span } from 'nestjs-otel';
+import { Span, TraceService } from 'nestjs-otel';
 import { KyselyCLS } from '../../../infrastructure/shared/types/kyselyCLS';
 
 @Injectable()
 export class PostsRepository {
-  constructor(private readonly db: TransactionHost<KyselyCLS>) {}
+  constructor(
+    private readonly db: TransactionHost<KyselyCLS>,
+    private readonly traceService: TraceService,
+  ) {}
 
   @Span()
   async findOneById(postId: number): Promise<Post | null> {
@@ -46,6 +49,8 @@ export class PostsRepository {
       })
       .where('posts.postId', '=', postId)
       .groupBy('posts.postId');
+
+    this.traceService.getSpan()?.addEvent('sql', { sql: query.compile().sql });
 
     const post = await query.executeTakeFirst();
 
@@ -91,6 +96,8 @@ export class PostsRepository {
 
     query = query.orderBy('postId', 'desc').limit(search.limit);
 
+    this.traceService.getSpan()?.addEvent('sql', { sql: query.compile().sql });
+
     const rows = await query.execute();
 
     return SearchPostsResponseDto.fromMany(
@@ -100,7 +107,7 @@ export class PostsRepository {
 
   @Span()
   async insertAndFillInPost(post: Post): Promise<void> {
-    const result = await this.db.tx
+    const query = this.db.tx
       .insertInto('posts')
       .values({
         userId: post.userId,
@@ -111,8 +118,11 @@ export class PostsRepository {
         body: post.body,
         tags: post.tags,
       })
-      .returning(['postId', 'createdAt'])
-      .executeTakeFirstOrThrow();
+      .returning(['postId', 'createdAt']);
+
+    this.traceService.getSpan()?.addEvent('sql', { sql: query.compile().sql });
+
+    const result = await query.executeTakeFirstOrThrow();
 
     post.postId = result.postId;
     post.createdAt = result.createdAt;
@@ -128,6 +138,8 @@ export class PostsRepository {
       .updateTable('posts')
       .where('posts.postId', '=', post.postId)
       .set(changes);
+
+    this.traceService.getSpan()?.addEvent('sql', { sql: query.compile().sql });
 
     await query.execute();
   }
