@@ -8,6 +8,7 @@ import { Span } from 'nestjs-otel';
 import { UserRoleEnum } from '@portfolio/contracts';
 import { KyselyCLS } from '../../../../infrastructure/shared/types/kyselyCLS';
 import { Password } from '../../domain/user/valueObjects/passwordHash';
+import { JWTTokens } from '../../domain/user/valueObjects/JWTTokens';
 
 @Injectable()
 export class UserRepository {
@@ -48,13 +49,16 @@ export class UserRepository {
     return new User({
       ...userRow,
       password: new Password(userRow),
-      refreshTokens: userRow.refreshTokens.map(
-        (t) =>
-          new RefreshToken({
-            ...t,
-            expiresAt: new Date(Date.parse(t.expiresAt)),
-          }),
-      ),
+      jwtTokens: new JWTTokens({
+        jwtTokensVersion: userRow.jwtTokensVersion,
+        refreshTokens: userRow.refreshTokens.map(
+          (t) =>
+            new RefreshToken({
+              ...t,
+              expiresAt: new Date(Date.parse(t.expiresAt)),
+            }),
+        ),
+      }),
     });
   }
 

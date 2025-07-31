@@ -13,28 +13,23 @@ import {
   User,
 } from '../../../../../src/modules/auth/domain/user/user';
 import { PasswordBuilder } from '../../../../__fixtures__/builders/user/valueObjects/password.builder';
+import { JWTTokensBuilder } from '../../../../__fixtures__/builders/user/valueObjects/jwtTokens.builder';
 
 const makeExpectedPayload = (
   userProps: User,
   authConfig: AuthConfig,
   now: Date,
 ) => {
-  const {
-    userId,
-    roles,
-    jwtTokensVersion: tokensVersion,
-    username,
-  } = userProps;
   const iat = getTimeInSeconds(now);
 
   const { accessToken, refreshToken } = authConfig;
   const makePayload = (
     tokenConfig: AuthConfig['accessToken'] | AuthConfig['refreshToken'],
   ) => ({
-    userId,
-    roles,
-    jwtTokensVersion: tokensVersion,
-    username,
+    userId: userProps.userId,
+    roles: userProps.roles,
+    jwtTokensVersion: userProps.jwtTokens.jwtTokensVersion,
+    username: userProps.username,
     iat,
     exp: getTimeInSeconds(
       new Date(iat * 1000 + tokenConfig.expiryInSeconds * 1000),
@@ -94,7 +89,9 @@ describe(`${User.name}`, () => {
         expect(tokensPayload).toStrictEqual(
           makeExpectedPayload(user, authConfig, now),
         );
-        expect(user.refreshTokens[user.refreshTokens.length - 1]).toStrictEqual(
+        expect(
+          user.jwtTokens.refreshTokens[user.jwtTokens.refreshTokens.length - 1],
+        ).toStrictEqual(
           RefreshTokenBuilder.defaultPreInserted.with({
             token: resultTokens.refreshToken,
             expiresAt: new Date(
@@ -160,12 +157,14 @@ describe(`${User.name}`, () => {
         name: '2 expired token - should throw',
         now: new Date(2022, 0, 3),
         user: UserBuilder.defaultAll.with({
-          refreshTokens: [
-            RefreshTokenBuilder.defaultPreInserted.with({
-              token: 'expired-token',
-              expiresAt: new Date(new Date(2022, 0, 3).getTime() - 1000),
-            }).result,
-          ],
+          jwtTokens: JWTTokensBuilder.defaultAll.with({
+            refreshTokens: [
+              RefreshTokenBuilder.defaultPreInserted.with({
+                token: 'expired-token',
+                expiresAt: new Date(new Date(2022, 0, 3).getTime() - 1000),
+              }).result,
+            ],
+          }).result,
         }).result,
         token: 'expired-token',
         authConfig: AuthConfigBuilder.defaultAll.result,
@@ -183,17 +182,19 @@ describe(`${User.name}`, () => {
       {
         name: '1 valid refresh token - rotates and returns new tokens',
         user: UserBuilder.defaultAll.with({
-          refreshTokens: [
-            RefreshTokenBuilder.defaultPreInserted.with({
-              token: 'current-refresh',
-              expiresAt: new Date(
-                new Date(2022, 0, 3).getTime() +
-                  AuthConfigBuilder.defaultAll.result.refreshToken
-                    .expiryInSeconds *
-                    1000,
-              ),
-            }).result,
-          ],
+          jwtTokens: JWTTokensBuilder.defaultAll.with({
+            refreshTokens: [
+              RefreshTokenBuilder.defaultPreInserted.with({
+                token: 'current-refresh',
+                expiresAt: new Date(
+                  new Date(2022, 0, 3).getTime() +
+                    AuthConfigBuilder.defaultAll.result.refreshToken
+                      .expiryInSeconds *
+                      1000,
+                ),
+              }).result,
+            ],
+          }).result,
         }).result,
         token: 'current-refresh',
         authConfig: AuthConfigBuilder.defaultAll.result,
@@ -219,8 +220,8 @@ describe(`${User.name}`, () => {
         makeExpectedPayload(user, authConfig, now),
       );
 
-      expect(user.refreshTokens).toHaveLength(1);
-      expect(user.refreshTokens[0]).toStrictEqual(
+      expect(user.jwtTokens.refreshTokens).toHaveLength(1);
+      expect(user.jwtTokens.refreshTokens[0]).toStrictEqual(
         RefreshTokenBuilder.defaultPreInserted.with({
           token: refreshToken,
           expiresAt: new Date(
