@@ -38,21 +38,17 @@ export class User {
     givenPassword: string,
     authConfig: AuthConfig,
   ): Promise<TokenPair> {
-    if (!(await this.doPasswordsMatch(givenPassword, authConfig))) {
-      throw new UnauthorizedException(USERNAME_OR_PASSWORD_IS_NOT_VALID);
-    }
-
+    await this.assertPasswordsMatch(givenPassword, authConfig);
     return this.initNewTokens(authConfig);
   }
 
-  refresh(oldRefreshToken: string, authConfig: AuthConfig): TokenPair {
-    const [stored] = _.remove(this.refreshTokens, { token: oldRefreshToken });
-
-    if (!stored || stored.isExpired()) {
-      throw new UnauthorizedException(REFRESH_TOKEN_NOT_FOUND);
+  private async assertPasswordsMatch(
+    givenPassword: string,
+    authConfig: AuthConfig,
+  ): Promise<void> {
+    if (!(await this.doPasswordsMatch(givenPassword, authConfig))) {
+      throw new UnauthorizedException(USERNAME_OR_PASSWORD_IS_NOT_VALID);
     }
-
-    return this.initNewTokens(authConfig);
   }
 
   private async doPasswordsMatch(
@@ -69,6 +65,18 @@ export class User {
       givenHash.length === this.passwordHash.length &&
       crypto.timingSafeEqual(givenHash, this.passwordHash)
     );
+  }
+
+  refresh(oldRefreshToken: string, authConfig: AuthConfig): TokenPair {
+    const [stored] = _.remove(this.refreshTokens, { token: oldRefreshToken });
+    this.assertRefreshTokenIsNotExpired(stored);
+    return this.initNewTokens(authConfig);
+  }
+
+  private assertRefreshTokenIsNotExpired(stored: RefreshToken): void {
+    if (!stored || stored.isExpired()) {
+      throw new UnauthorizedException(REFRESH_TOKEN_NOT_FOUND);
+    }
   }
 
   private initNewTokens(authConfig: AuthConfig): TokenPair {
