@@ -41,16 +41,7 @@ export class User {
       throw new UnauthorizedException(USERNAME_OR_PASSWORD_IS_NOT_VALID);
     }
 
-    const sharedPayload = this.buildPayload();
-
-    const accessToken = this.signJwt(sharedPayload, authConfig.accessToken);
-    const refreshToken = this.signJwt(sharedPayload, authConfig.refreshToken);
-
-    this.refreshTokens.push(
-      RefreshToken.createByRefreshToken(refreshToken, this.userId),
-    );
-
-    return { accessToken, refreshToken };
+    return this.initNewTokens(authConfig);
   }
 
   refresh(oldRefreshToken: string, authConfig: AuthConfig): TokenPair {
@@ -63,18 +54,7 @@ export class User {
 
     this.refreshTokens = this.refreshTokens.filter((rt) => rt !== stored);
 
-    const sharedPayload = this.buildPayload();
-    const newAccessToken = this.signJwt(sharedPayload, authConfig.accessToken);
-    const newRefreshToken = this.signJwt(
-      sharedPayload,
-      authConfig.refreshToken,
-    );
-
-    this.refreshTokens.push(
-      RefreshToken.createByRefreshToken(newRefreshToken, this.userId),
-    );
-
-    return { accessToken: newAccessToken, refreshToken: newRefreshToken };
+    return this.initNewTokens(authConfig);
   }
 
   private async doPasswordsMatch(
@@ -91,6 +71,19 @@ export class User {
       givenHash.length === this.passwordHash.length &&
       crypto.timingSafeEqual(givenHash, this.passwordHash)
     );
+  }
+
+  private initNewTokens(authConfig: AuthConfig): TokenPair {
+    const sharedPayload = this.buildPayload();
+
+    const accessToken = this.signJwt(sharedPayload, authConfig.accessToken);
+    const refreshToken = this.signJwt(sharedPayload, authConfig.refreshToken);
+
+    this.refreshTokens.push(
+      RefreshToken.createByRefreshToken(refreshToken, this.userId),
+    );
+
+    return { accessToken, refreshToken };
   }
 
   private buildPayload(): UserPayload {
