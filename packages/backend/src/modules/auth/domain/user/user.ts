@@ -10,6 +10,7 @@ import {
   USERNAME_OR_PASSWORD_IS_NOT_VALID,
 } from '../../../../infrastructure/shared/constants';
 import { scrypt } from '../../../../infrastructure/shared/utils/scrypt';
+import * as _ from 'lodash';
 
 export type AuthConfig = (typeof config)['auth'];
 export type TokenPair = { accessToken: string; refreshToken: string };
@@ -45,14 +46,11 @@ export class User {
   }
 
   refresh(oldRefreshToken: string, authConfig: AuthConfig): TokenPair {
-    const stored = this.refreshTokens.find(
-      (rt) => rt.token === oldRefreshToken,
-    );
+    const [stored] = _.remove(this.refreshTokens, { token: oldRefreshToken });
+
     if (!stored || stored.isExpired()) {
       throw new UnauthorizedException(REFRESH_TOKEN_NOT_FOUND);
     }
-
-    this.refreshTokens = this.refreshTokens.filter((rt) => rt !== stored);
 
     return this.initNewTokens(authConfig);
   }
