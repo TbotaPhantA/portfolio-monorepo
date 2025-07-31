@@ -24,15 +24,13 @@ export class User {
 
   async login(givenPassword: string, config: AuthConfig): Promise<TokenPair> {
     await this.password.assertPasswordsMatch(givenPassword, config);
-    const payload = this.buildPayload();
-    return this.jwtTokens.signPair(payload, config);
+    return this.jwtTokens.signPair(this.buildPayload(), config);
   }
 
   refresh(oldRefreshToken: string, config: AuthConfig): TokenPair {
     const oldToken = this.jwtTokens.remove(oldRefreshToken);
     this.jwtTokens.assertRefreshTokenIsNotExpired(oldToken);
-    const payload = this.buildPayload();
-    return this.jwtTokens.signPair(payload, config);
+    return this.jwtTokens.signPair(this.buildPayload(), config);
   }
 
   private buildPayload(): UserPayload {
