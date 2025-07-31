@@ -7,6 +7,7 @@ import { TransactionHost } from '@nestjs-cls/transactional';
 import { Span } from 'nestjs-otel';
 import { UserRoleEnum } from '@portfolio/contracts';
 import { KyselyCLS } from '../../../../infrastructure/shared/types/kyselyCLS';
+import { Password } from '../../domain/user/valueObjects/passwordHash';
 
 @Injectable()
 export class UserRepository {
@@ -46,6 +47,7 @@ export class UserRepository {
 
     return new User({
       ...userRow,
+      password: new Password(userRow),
       refreshTokens: userRow.refreshTokens.map(
         (t) =>
           new RefreshToken({

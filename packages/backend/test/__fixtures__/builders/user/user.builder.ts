@@ -1,9 +1,7 @@
 import { InjectionBuilder } from 'ts-fixture-builder';
-import { makePasswordHash } from '../../../shared/utils/makePasswordHash';
-import { AuthConfigBuilder } from '../auth/authConfig.builder';
-import { makeSalt } from '../../../shared/utils/makeSalt';
 import { UserRoleEnum } from '@portfolio/contracts';
 import { User } from '../../../../src/modules/auth/domain/user/user';
+import { PasswordBuilder } from './valueObjects/password.builder';
 
 export class UserBuilder {
   static get defaultAll(): InjectionBuilder<User> {
@@ -13,11 +11,7 @@ export class UserBuilder {
         roles: [UserRoleEnum.ADMIN],
         jwtTokensVersion: 1,
         username: 'username',
-        salt: makeSalt('salt', AuthConfigBuilder.defaultAll.result),
-        passwordHash: makePasswordHash(
-          'password',
-          AuthConfigBuilder.defaultAll.result,
-        ),
+        password: PasswordBuilder.defaultAll.result,
         refreshTokens: [],
       }),
     );

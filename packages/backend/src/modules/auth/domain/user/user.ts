@@ -1,16 +1,12 @@
 import { RefreshToken } from './refreshToken/refreshToken';
-import * as crypto from 'crypto';
 import { UnauthorizedException } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import { UserPayload, UserRoleEnum } from '@portfolio/contracts';
 import { config } from '../../../../infrastructure/config/config';
 import { NoMethods } from '../../../../infrastructure/shared/types/noMethods';
-import {
-  REFRESH_TOKEN_NOT_FOUND,
-  USERNAME_OR_PASSWORD_IS_NOT_VALID,
-} from '../../../../infrastructure/shared/constants';
-import { scrypt } from '../../../../infrastructure/shared/utils/scrypt';
+import { REFRESH_TOKEN_NOT_FOUND } from '../../../../infrastructure/shared/constants';
 import * as _ from 'lodash';
+import { Password } from './valueObjects/passwordHash';
 
 export type AuthConfig = (typeof config)['auth'];
 export type TokenPair = { accessToken: string; refreshToken: string };
@@ -20,8 +16,7 @@ export class User {
   jwtTokensVersion: number;
   roles: UserRoleEnum[];
   username: string;
-  salt: Buffer;
-  passwordHash: Buffer;
+  password: Password;
   refreshTokens: RefreshToken[];
 
   constructor(raw: NoMethods<User>) {
@@ -29,8 +24,7 @@ export class User {
     this.jwtTokensVersion = raw.jwtTokensVersion;
     this.roles = raw.roles;
     this.username = raw.username;
-    this.salt = raw.salt;
-    this.passwordHash = raw.passwordHash;
+    this.password = raw.password;
     this.refreshTokens = raw.refreshTokens;
   }
 
@@ -38,33 +32,8 @@ export class User {
     givenPassword: string,
     authConfig: AuthConfig,
   ): Promise<TokenPair> {
-    await this.assertPasswordsMatch(givenPassword, authConfig);
+    await this.password.assertPasswordsMatch(givenPassword, authConfig);
     return this.initNewTokens(authConfig);
-  }
-
-  private async assertPasswordsMatch(
-    givenPassword: string,
-    authConfig: AuthConfig,
-  ): Promise<void> {
-    if (!(await this.doPasswordsMatch(givenPassword, authConfig))) {
-      throw new UnauthorizedException(USERNAME_OR_PASSWORD_IS_NOT_VALID);
-    }
-  }
-
-  private async doPasswordsMatch(
-    givenPassword: string,
-    { passwordPepper, keyLengthInBytes }: AuthConfig,
-  ): Promise<boolean> {
-    const givenHash = await scrypt(
-      givenPassword + passwordPepper,
-      this.salt,
-      keyLengthInBytes,
-    );
-
-    return (
-      givenHash.length === this.passwordHash.length &&
-      crypto.timingSafeEqual(givenHash, this.passwordHash)
-    );
   }
 
   refresh(oldRefreshToken: string, authConfig: AuthConfig): TokenPair {

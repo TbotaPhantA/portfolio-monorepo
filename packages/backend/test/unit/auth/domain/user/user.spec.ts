@@ -12,6 +12,7 @@ import {
   AuthConfig,
   User,
 } from '../../../../../src/modules/auth/domain/user/user';
+import { PasswordBuilder } from '../../../../__fixtures__/builders/user/valueObjects/password.builder';
 
 const makeExpectedPayload = (
   userProps: User,
@@ -52,10 +53,12 @@ describe(`${User.name}`, () => {
       {
         name: '1 valid admin credentials - should return valid tokens',
         user: UserBuilder.defaultAll.with({
-          passwordHash: makePasswordHash(
-            'correct password',
-            AuthConfigBuilder.defaultAll.result,
-          ),
+          password: PasswordBuilder.defaultAll.with({
+            passwordHash: makePasswordHash(
+              'correct password',
+              AuthConfigBuilder.defaultAll.result,
+            ),
+          }).result,
         }).result,
         givenPassword: 'correct password',
         authConfig: AuthConfigBuilder.defaultAll.result,
@@ -64,10 +67,12 @@ describe(`${User.name}`, () => {
       {
         name: '2 valid admin credentials - should return valid tokens',
         user: UserBuilder.defaultAll.with({
-          passwordHash: makePasswordHash(
-            'correct password 2',
-            AuthConfigBuilder.defaultAll.result,
-          ),
+          password: PasswordBuilder.defaultAll.with({
+            passwordHash: makePasswordHash(
+              'correct password 2',
+              AuthConfigBuilder.defaultAll.result,
+            ),
+          }).result,
         }).result,
         givenPassword: 'correct password 2',
         authConfig: AuthConfigBuilder.defaultAll.result,
@@ -117,10 +122,12 @@ describe(`${User.name}`, () => {
       {
         name: '1 invalid password - should throw',
         user: UserBuilder.defaultAll.with({
-          passwordHash: makePasswordHash(
-            'correct password',
-            AuthConfigBuilder.defaultAll.result,
-          ),
+          password: PasswordBuilder.defaultAll.with({
+            passwordHash: makePasswordHash(
+              'correct password',
+              AuthConfigBuilder.defaultAll.result,
+            ),
+          }).result,
         }).result,
         givenPassword: 'incorrect password',
         authConfig: AuthConfigBuilder.defaultAll.result,
