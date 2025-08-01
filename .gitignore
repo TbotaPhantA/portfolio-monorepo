@@ -40,4 +40,5 @@ yarn-error.log*
 
 # IDE
 .idea
+.vscode
 packages/**/tsconfig.tsbuildinfo
