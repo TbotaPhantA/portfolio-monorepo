@@ -7,6 +7,7 @@
     "test": "turbo run test --filter=backend",      
     "pipe": "turbo run pipe",
     "dev": "turbo run dev",
+    "dev:backend": "turbo run start:dev --filter=backend",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types"
   },

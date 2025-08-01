@@ -14,6 +14,10 @@
     },
     "pipe": {
       "dependsOn": ["build", "lint", "test"]
+    },
+    "start:dev": {
+      "dependsOn": ["^start:dev"],
+      "cache": false
     }
   }
 }
