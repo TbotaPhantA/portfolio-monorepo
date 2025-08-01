@@ -1,6 +1,7 @@
 {
   "name": "portfolio",
   "private": true,
+  "workspaces": ["packages/*"],
   "scripts": {
     "build": "turbo run build",
     "lint": "turbo run lint --filter=backend",      
