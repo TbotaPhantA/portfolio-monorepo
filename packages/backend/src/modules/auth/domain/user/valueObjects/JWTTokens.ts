@@ -4,8 +4,10 @@ import { RefreshToken } from '../refreshToken/refreshToken';
 import * as _ from 'lodash';
 import * as jwt from 'jsonwebtoken';
 import { REFRESH_TOKEN_NOT_FOUND } from '../../../../../infrastructure/shared/constants';
-import { AuthConfig, TokenPair } from '../user';
+import { AuthConfig } from '../user';
 import { UserPayload } from '@portfolio/contracts';
+
+export type TokenPair = { accessToken: string; refreshToken: string };
 
 export class JWTTokens {
   jwtTokensVersion: number;

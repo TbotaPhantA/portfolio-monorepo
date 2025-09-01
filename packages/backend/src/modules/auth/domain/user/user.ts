@@ -2,10 +2,9 @@ import { UserPayload, UserRoleEnum } from '@portfolio/contracts';
 import { config } from '../../../../infrastructure/config/config';
 import { NoMethods } from '../../../../infrastructure/shared/types/noMethods';
 import { Password } from './valueObjects/passwordHash';
-import { JWTTokens } from './valueObjects/JWTTokens';
+import { JWTTokens, TokenPair } from './valueObjects/JWTTokens';
 
 export type AuthConfig = (typeof config)['auth'];
-export type TokenPair = { accessToken: string; refreshToken: string };
 
 export class User {
   userId: number;
